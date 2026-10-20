@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Touchline · Live Match Intelligence</title>
+  <meta name="description" content="Multi-agent engine that turns synthetic football events into explainable, personalised broadcast overlays." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2310b981'/><path d='M8 9h16M16 9v15' stroke='white' stroke-width='3.5' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">T</span>
+      <div>
+        <div class="brand-name">TOUCHLINE</div>
+        <div class="brand-sub">Synthetic match intelligence · multi-agent</div>
+      </div>
+    </div>
+    <div class="match-title" id="matchTitle">Connecting…</div>
+    <div class="controls">
+      <span class="badge" id="modelBadge" title="Language-agent backend">—</span>
+      <button class="icon-btn" id="pauseBtn" title="Pause / resume (space)">❚❚</button>
+      <label class="speed">Speed
+        <select id="speedSel"></select>
+      </label>
+      <button class="btn ghost" id="newMatchBtn" title="Kick off a new synthetic match">New match</button>
+    </div>
+  </header>
+
+  <section class="profilebar" aria-label="Viewer profile">
+    <div class="seg" id="modeSeg" role="radiogroup" aria-label="Experience">
+      <button data-mode="fan" role="radio">Fan</button>
+      <button data-mode="analyst" role="radio">Analyst</button>
+    </div>
+    <label>Language
+      <select id="langSel">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="pt">Português</option>
+      </select>
+    </label>
+    <label>My club
+      <select id="favSel"><option value="">Neutral</option></select>
+    </label>
+    <label>Follow player
+      <select id="focusSel"><option value="">Nobody</option></select>
+    </label>
+    <label>Pinned metric
+      <select id="metricSel">
+        <option value="">None</option>
+        <option value="xg">xG</option>
+        <option value="possession">Possession</option>
+        <option value="momentum">Momentum</option>
+        <option value="chaos">Control vs chaos</option>
+        <option value="pressure">Pressing rate</option>
+      </select>
+    </label>
+  </section>
+
+  <main class="layout">
+    <section class="stage-wrap">
+      <div class="stage" id="stage">
+        <canvas id="pitch" aria-label="Live pitch view of synthetic match"></canvas>
+        <div class="overlay" id="overlay">
+          <div class="scorebug" id="scorebug">
+            <span class="sb-team" id="sbHome"><i></i><b>HOM</b></span>
+            <span class="sb-score" id="sbScore">0 – 0</span>
+            <span class="sb-team" id="sbAway"><b>AWY</b><i></i></span>
+            <span class="sb-clock" id="sbClock">0'</span>
+          </div>
+          <div class="corner-bug hidden" id="cornerBug"></div>
+          <div class="pinned hidden" id="pinned"></div>
+          <div class="focus-card hidden" id="focusCard"></div>
+          <div class="tags" id="tags"></div>
+          <div class="lower-third hidden" id="lowerThird"></div>
+          <div class="full-panel hidden" id="fullPanel"></div>
+          <div class="ticker" id="ticker"><span class="ticker-label">LIVE</span><span class="ticker-text" id="tickerText">Waiting for kick-off</span></div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-head">
+          <span><b class="dot home"></b><span id="tlHome">Home</span> momentum</span>
+          <span class="muted">Control ←→ Chaos (dashed)</span>
+          <span><span id="tlAway">Away</span> momentum <b class="dot away"></b></span>
+        </div>
+        <canvas id="timelineCanvas" height="90"></canvas>
+      </div>
+    </section>
+
+    <aside class="side">
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="feed">Story</button>
+        <button class="tab" data-tab="stats">Stats</button>
+        <button class="tab" data-tab="ops">Agent Ops</button>
+        <button class="tab" data-tab="json">Cue JSON</button>
+      </nav>
+      <div class="panel active" id="panel-feed"><ol class="feed" id="feed"></ol></div>
+      <div class="panel" id="panel-stats"><div id="statsBox"></div></div>
+      <div class="panel" id="panel-ops">
+        <div class="pipeline" id="pipelineViz"></div>
+        <div class="ops-kpis" id="opsKpis"></div>
+        <div class="chaos">
+          <div class="chaos-title">Inject a fault <span class="muted">· watch the agents recover</span></div>
+          <div class="chaos-grid">
+            <button data-fault="model_outage">Model outage</button>
+            <button data-fault="slow_model">Slow model</button>
+            <button data-fault="hallucination">Hallucinated stat</button>
+            <button data-fault="duplicate">Duplicate event</button>
+            <button data-fault="reorder">Out-of-order feed</button>
+            <button data-fault="corrupt">Off-pitch coords</button>
+            <button data-fault="ghost">Unknown player</button>
+            <button data-fault="malformed">Malformed event</button>
+          </div>
+        </div>
+        <ol class="traces" id="traces"></ol>
+      </div>
+      <div class="panel" id="panel-json">
+        <p class="muted small">Every overlay is a timed, machine-readable cue a graphics engine can render. Schema: <a href="/api/schema/cue" target="_blank" rel="noopener">/api/schema/cue</a></p>
+        <pre class="json" id="cueJson">No cues yet.</pre>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    All clubs, players and data are fictional and generated by a seeded simulator. Seed <span id="seedLabel">—</span>.
+    <a href="https://github.com/softalpha0/Touchline" target="_blank" rel="noopener">Source</a>
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

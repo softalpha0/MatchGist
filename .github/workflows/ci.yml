@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev,foundry]"
+      - name: Lint
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Type check
+        run: mypy touchline
+      - name: Tests
+        env:
+          TOUCHLINE_OFFLINE: "1"
+        run: pytest -q
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t touchline:ci .
+      - name: Smoke test
+        run: |
+          docker run -d -p 8000:8000 --name tl touchline:ci
+          for i in $(seq 1 20); do curl -fsS localhost:8000/api/health && exit 0; sleep 1; done
+          docker logs tl; exit 1

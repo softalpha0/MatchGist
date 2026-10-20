@@ -1,0 +1,14 @@
+# Azure Developer CLI: `azd up` provisions Container Apps and deploys Touchline.
+name: touchline
+metadata:
+  template: touchline@0.1.0
+services:
+  web:
+    project: .
+    language: python
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+infra:
+  provider: bicep
+  path: infra
