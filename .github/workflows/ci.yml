@@ -23,7 +23,49 @@ jobs:
         run: |
           ruff check .
           ruff format --check .
-      - name: Pytest
+      - name: Pytest (offline: no model or speech calls)
+        env:
+          MATCHGIST_OFFLINE: "1"
         run: pytest -q
       - name: Generate a match (smoke)
         run: python -m app.simulator --seed 42 --storyline late_drama --out ../matches/ci.jsonl
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  image:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -t matchgist:ci .
+      - name: Smoke test
+        run: |
+          docker run -d -p 8000:8000 -e MATCHGIST_OFFLINE=1 --name mg matchgist:ci
+          for i in $(seq 1 30); do curl -fsS localhost:8000/health && break; sleep 1; done
+          curl -fsS localhost:8000/ | grep -q MatchGist
+          curl -fsS localhost:8000/config
+      - name: Publish to GitHub Container Registry (main only)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}:latest
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag matchgist:ci "$IMAGE"
+          docker push "$IMAGE"

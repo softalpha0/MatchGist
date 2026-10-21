@@ -1,6 +1,6 @@
 # Progress
 
-_Last updated: Wed Oct 21 (end of M2, a day early)._
+_Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure accounts)._
 
 ## Milestones (SPEC section 15)
 
@@ -8,48 +8,61 @@ _Last updated: Wed Oct 21 (end of M2, a day early)._
 |---|---|---|---|
 | M1 | Wed Oct 21 | Repo, schema, simulator, fan personas | ✅ done |
 | M2 | Thu Oct 22 | Stats Engine, Match State, Moment Detector, channel limits + SMS encoding, SSE stream | ✅ done |
-| M3 | Fri Oct 23 | Agents: Explainer, Ranker, Budget Guard, Localizer, Compressor, Verifier, fallbacks | ⏳ next |
-| M4 | Sat Oct 24 | Voice (Azure AI Speech), Digest, broadcast overlay cues | ☐ |
-| M5 | Sun Oct 25 | Frontend | ☐ |
-| M6 | Mon Oct 26 | Deploy + docs | ☐ |
+| M3 | Fri Oct 23 | Agents: Explainer, Ranker, Budget Guard, Localizer, Compressor, Verifier, fallbacks | ✅ done (offline-verified; needs a live model check) |
+| M4 | Sat Oct 24 | Voice (Azure AI Speech), Digest, broadcast overlay cues | ✅ built; voice needs a Speech key to verify |
+| M5 | Sun Oct 25 | Frontend | ✅ done: landing page + live demo |
+| M6 | Mon Oct 26 | Deploy + docs | 🟡 Dockerfile, CI image publish, deploy script and docs ready; **you** run the deploy |
 | M7 | Tue Oct 27 | Video + submit (by 11:00 PM WAT) | ☐ |
 
-## M2: what was built
+## What's built
 
-- **Channels** (`app/channels/`):
-  - Real GSM-7 vs UCS-2 detection. Extension characters cost two septets, astral emoji cost two UTF-16 units, and neither is ever split across segments. Single SMS: 160/70; concatenated: 153/67 per segment.
-  - Hard limits per channel with readable reasons.
-  - The SPEC 6 size model.
-  - 32 tests, including the 160/161 and 70/71 boundaries and the Jakarta worked example (1.4 KB).
-- **Stats Engine** (`app/stats/`): SPEC 9 formulas as pure functions, folded into the **Match State** (`app/state/match_state.py`):
-  - team and player stats
-  - rolling 5-minute possession, momentum and pressure index
-  - per-minute series
-  - `snapshot()`, the set of numbers agents may cite
-- **Moment Detector** (`app/moments/`): SPEC 9.1 triggers with base scores, each moment carrying its facts. A goal includes the assist and its pass difficulty; half-time and full-time include xG, shots, possession and the top performer. About 17 candidate moments per match.
-- **Live stream** (`app/runtime.py`, `GET /matches/{id}/stream`, `GET /matches/{id}/state`, `GET /matches`): one shared playback per match, SSE with a snapshot first, keepalives, and slow viewers dropped. Four demo matches (seed 42, every storyline) are generated at startup.
-- 74 tests, ruff clean. The test-client deprecation warning is silenced.
+- **Agents** (`backend/app/agents/`): Explainer once per moment. Then, per fan in parallel, a Microsoft Agent
+  Framework workflow: Ranker → Budget Guard → Localizer → Compressor ⇄ Verifier → deliver, plus a Digest at full
+  time. Each model call has an 8 s timeout and 2 retries, falling back to per-channel, per-language templates
+  (9 moment types × 6 languages). Backends: Azure OpenAI (key), Foundry project (Entra ID), or offline.
+- **Budget Guard:** SPEC 9.2 plus planning. The last two pings are kept for a goal and the digest, close moments
+  are bundled within 2 minutes, half-time and red cards send immediately, and every decision carries a reason.
+- **Verifier:** numbers must come from the moment's facts (digits in any script); SMS segment allowance from the
+  Guard; all channel limits.
+- **Voice:** Azure AI Speech REST, Ogg/Opus with real duration and size; text fallback when not configured.
+  Pidgin is read by `en-NG-EzinneNeural` (labelled).
+- **Overlay cues** for the broadcast persona (SPEC 10.2).
+- **Runtime/API:** deliveries and agent events on the SSE stream; replay, add-a-fan, ledger, digest, audio and
+  config endpoints.
+- **Frontend** (`frontend/`): Next.js 15 + Tailwind 4 static export served by FastAPI. Landing page; `/live` with
+  pitch and overlay, devices with data meters, pings and binding limit, System panel, Add a fan.
+- **Ops:** multi-stage Dockerfile, CI (backend, frontend, image build + smoke test + GHCR publish),
+  `infra/deploy.ps1`, `docs/deploy.md`, `docs/architecture.md`, full README.
+- **Tests:** 171 backend tests, all offline. They include a model outage, a hallucinating model, the Hindi SMS
+  reject-and-rewrite loop, and budget limits for every persona.
 
-## Decisions taken
+## Decisions taken (new in M3–M5)
 
 | Decision | Why |
 |---|---|
-| Reuse the Touchline prototype rather than start from zero | Saves about a day |
-| Delhi persona uses **SMS** (Hindi, UCS-2) instead of chat | The video's "Verifier rejects a 72-char Hindi SMS" moment needs a real UCS-2 SMS persona |
-| Team-relative coordinates; second-half clock restarts at 45:00 | SPEC "own goal → opponent goal"; broadcast convention |
-| Standalone `pressure` events only for genuine presses | Keeps matches in the 1,200–1,800 event range |
-| Storylines = biased plan + deterministic sub-seed search | Same seed always gives the same match; ~4 s average |
-| **Elite pass threshold 9.5, not SPEC's 8** | With the SPEC formula, any long ball into the final third with a little pressure scores 8 (~20 a match). 9.5 gives ~3–4. It's one constant (`ELITE_PASS_DIFFICULTY`) if you want SPEC's value back. |
-| On-target shot = 5 momentum points (not 3 + 5) | SPEC wording is ambiguous; "instead of" reads naturally |
-| Momentum normalised with a floor of 25; a swing also needs the new leader at ≥ 25 and a 10-minute cooldown | Without this the 5-minute momentum flips about 12 times a match. Now about 4. |
-| Pass `pressure` is convex in the nearest opponent's distance (0 beyond 3.5 m, 0.25 at 2 m, 0.69 at 1 m) | The linear curve put 57% of passes above 0.5. Now it's 31%, with a median of 0.17. |
-| One playback per match shared by all viewers | M3 deliveries are computed once per fan and seen identically by everyone |
+| Ranker is pure code (no model call) | SPEC allows "code + small LLM call"; rules give visible, testable reasons |
+| Deliveries verified against the moment's facts, not the whole snapshot | The full snapshot has so many small integers that "his 9th goal in 3 games" passed. Facts-only is the real guarantee. |
+| Budget Guard keeps the last 2 pings for a goal + digest | Without it, Jakarta's 1 MB/4-ping fan missed their own club's 90th-minute goal |
+| Half-time and red cards are never held for a bundle | A held HT was bundled after a second-half goal ("Plus: HT 0-0") |
+| Verifier sends an immutable `Verified` message on the retry loop | Workflow edge conditions were evaluated after the job mutated, so a rejected text could also reach Deliver |
+| Accent stripping for Latin-script SMS when it saves a segment | One "í" in a scorer's name pushed a Bahasa digest into UCS-2 |
+| Arabic text isolates Latin names (U+2068/U+2069) | "Okeke-Rhodes" was split by the bidi algorithm on the watch |
+| Next.js static export served by FastAPI | One container, one URL, no Node server in production |
+| Image published to GitHub Container Registry | No Azure Container Registry cost |
 
-## Open decisions / risks
+## What's left (yours unless noted)
 
-1. **Commits:** you push manually (no Claude attribution in commits). Code reaches you as a git bundle.
-2. **Repo name:** keep `Touchline` or use `matchgist` (six other entries use "Touchline").
-3. **Brazilian Portuguese SMS:** ç, ã, õ, ê, á and í are not GSM-7, so most pt-BR text costs UCS-2 (70 chars). The São Paulo persona is on push, so this doesn't bite in the demo, but the M3 Compressor should know it. Option: an accent-stripping GSM fallback for Latin-script languages, with the trade-off shown in the System panel.
-4. **Nigerian Pidgin voice (M4):** check Azure AI Speech for `pcm`. Likely fallback: an `en-NG` neural voice reading Pidgin text, labelled.
-5. **Model (M3):** confirm `gpt-4o-mini` is deployable in your Foundry region before pinning.
-6. **Northgate is the stronger club** (about 60% of seed-sweep wins). Fine for storylines; the demo uses seed 42 per storyline anyway.
+1. **Push the code** (you push manually) and make the GitHub repo public. Decide the repo name; the landing
+   page's "Read the code" link points at `github.com/softalpha0/matchgist`.
+2. **Foundry model:** deploy a small chat model. ⚠️ `gpt-4o-mini` is reportedly retired on Azure in 2026; pick the
+   current mini model. Put the endpoint, key and deployment in `.env`, then run a match and check `/config` says
+   `azure-openai`. I'll then tune prompts against real output (the agent code hasn't run against a live model yet).
+3. **Speech:** create a free F0 Speech resource, set the key and region, and confirm the voices exist.
+4. **Deploy** with `infra/deploy.ps1` (after the $50 budget alert). Put the URL in the README. Open `/live` in a
+   private window.
+5. **Video** (< 2 min) following SPEC section 16, then **submit** by Tue Oct 27, 11:00 PM WAT.
+6. Housekeeping before submission (ask me):
+   - delete `legacy/`
+   - decide whether `SPEC.md`, `HACKATHON_BRIEF.md` and `CLAUDE.md` stay in the public repo (they mention the
+     real league's name in the challenge title)
+7. Stretch (not done): real SMS via Azure Communication Services.
