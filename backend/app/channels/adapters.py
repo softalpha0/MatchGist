@@ -1,1 +1,1 @@
-"""Delivery adapters: overlay cues and message objects per channel. Milestone M3/M4."""
+"""Delivery adapters: overlay cues and message objects per channel. M3/M4."""
