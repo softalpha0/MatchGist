@@ -14,6 +14,7 @@ def test_create_match():
     assert r.status_code == 201
     body = r.json()
     assert body["match_id"].startswith("m") and 1200 <= body["event_count"] <= 1800
+    assert body["status"] == "ready"
     assert body["home"] == "Riverside Athletic"
 
 
