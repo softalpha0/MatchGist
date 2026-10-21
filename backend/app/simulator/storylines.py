@@ -32,19 +32,19 @@ class StoryPlan:
         """Multiplier on goal probability for ``side`` at ``minute``."""
         if self.storyline == "comeback":
             if minute < 60:
-                return 1.7 if side == self.leader else 0.5
+                return 2.0 if side == self.leader else 0.4
             if minute >= 68:
-                return 0.4 if side == self.leader else 2.3
+                return 0.3 if side == self.leader else 2.8
         if self.storyline == "late_drama":
-            return 2.6 if minute >= 85 else 0.75
+            return 3.2 if minute >= 85 else 0.6
         return 1.0
 
     def shooting(self, side: str, minute: float) -> float:
         """Multiplier on the chance that a player in range shoots."""
         if self.storyline == "comeback" and minute >= 68 and side != self.leader:
-            return 1.7
-        if self.storyline == "late_drama" and minute >= 85:
             return 2.2
+        if self.storyline == "late_drama" and minute >= 85:
+            return 2.8
         return 1.0
 
     def force_red(self, side: str, minute: float) -> bool:

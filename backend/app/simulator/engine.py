@@ -42,6 +42,14 @@ GOAL_HALF_WIDTH = 3.66
 VENUES = ["Lantern Park", "The Saltworks", "Millbrook Stadium", "Copperfield Ground"]
 MAX_STORY_ATTEMPTS = 60
 
+# How much a passer prefers each role as receiver, by the third of the pitch the passer is in:
+# build through defence and midfield, look for forwards once in the final third.
+ROLE_RECEIVE_BIAS = {
+    "own": {"GK": 0.0, "DF": 1.1, "MF": 0.9, "FW": 0.0},
+    "middle": {"GK": 0.0, "DF": 0.9, "MF": 0.8, "FW": 0.5},
+    "final": {"GK": 0.0, "DF": 0.2, "MF": 0.7, "FW": 0.9},
+}
+
 # 4-3-3 slots: (position, x as share of the pitch from own goal, y as share of the width)
 FORMATION: list[tuple[str, float, float]] = [
     ("GK", 0.04, 0.50),
@@ -439,7 +447,7 @@ class MatchEngine:
                     rel = fx + (ball_rel - 0.5) * 0.6 + push
                     if reset:
                         rel = min(rel * 0.75, 0.47)
-                    rel = clamp(rel, 0.03, 0.95)
+                    rel = clamp(rel, 0.03, 0.86 if pos == "FW" else 0.8)
                     width = 0.95 if attacking else 0.7
                     ty = (
                         PITCH_WIDTH / 2
@@ -590,20 +598,28 @@ class MatchEngine:
         gx = self.goal_x(side)
         dgoal = math.hypot(gx - x, PITCH_WIDTH / 2 - y)
         angle = goal_angle(x, y, gx)
-        if dgoal < 25 and self.position(h) != "GK":
-            p_shoot = clamp((25 - dgoal) / 25 * 0.09 + angle * 0.04, 0, 0.5)
+        shot_range = 28 if self.position(h) == "MF" else 26  # midfielders try their luck from distance
+        if dgoal < shot_range and self.position(h) != "GK":
+            p_shoot = clamp((shot_range - dgoal) / 25 * 0.2 + angle * 0.08, 0, 0.6)
             if self.rng.random() < p_shoot * self.plan.shooting(side, minute):
                 self._shoot(h, header=False)
                 return
 
+        wide = abs(y - PITCH_WIDTH / 2) > 17
+        if wide and abs(gx - x) < 30 and self.position(h) != "GK" and self.rng.random() < 0.35:
+            self._pass(h, cross=True)  # wide in the final third: deliver into the box
+            return
+
         p_carry = 0.48 if self.clubs[side].style != "possession" else 0.42
+        if self.position(h) == "FW" and abs(self.goal_x(side) - x) < 35:
+            p_carry += 0.3  # forwards in the final third run at the defence
         if od > 4 and self.position(h) != "GK" and self.rng.random() < p_carry + 0.25 * (od > 9):
             d = self.direction(side)
             length = self.rng.uniform(6, 18)
-            self.carry_target = (
-                clamp(x + d * length, 1, PITCH_LENGTH - 1),
-                clamp(y + self.rng.uniform(-6, 6), 2, PITCH_WIDTH - 2),
-            )
+            # wide forwards in the final third cut inside toward goal
+            inside = 0.45 if self.position(h) == "FW" and abs(self.goal_x(side) - x) < 35 else 0.0
+            ty = y + (PITCH_WIDTH / 2 - y) * inside + self.rng.uniform(-6, 6)
+            self.carry_target = (clamp(x + d * length, 1, PITCH_LENGTH - 1), clamp(ty, 2, PITCH_WIDTH - 2))
             self.carry_start = (x, y, self.t)
             self.next_action_t = self.t
             return
@@ -619,6 +635,9 @@ class MatchEngine:
         opponents = [self._p(o) for o in self.on_pitch[self._other(side)]]
         style = self.clubs[side].style
 
+        own_goal_x = PITCH_LENGTH - self.goal_x(side)
+        third = abs(origin[0] - own_goal_x) / PITCH_LENGTH
+        bias = ROLE_RECEIVE_BIAS["own" if third < 0.34 else "middle" if third < 0.66 else "final"]
         best: tuple[float, str, dict[str, float]] | None = None
         for mate in self.on_pitch[side]:
             if mate == h or (self.position(mate) == "GK" and not pressured):
@@ -630,11 +649,19 @@ class MatchEngine:
             progress = d * (mp[0] - origin[0])
             openness = min((dist(mp, o) for o in opponents), default=20)
             lane = min((point_segment_distance(o, origin, mp) for o in opponents), default=20)
+            progress_weight = 0.01 if pressured else 0.04  # under pressure, safety first
             score = (
-                0.05 * progress + 0.22 * min(openness, 8) + 0.3 * min(lane, 6) - 0.03 * max(0, length - 22)
+                progress_weight * progress
+                + 0.22 * min(openness, 8)
+                + 0.3 * min(lane, 6)
+                - 0.03 * max(0, length - 22)
             )
+            # build-up runs through the midfield; forwards are there to finish, not to recycle
+            score += bias[self.position(mate)]
+            if self.position(h) == "FW" and self.position(mate) == "FW":
+                score -= 1.2
             if style == "direct":
-                score += 0.03 * progress
+                score += 0.012 * progress
             elif style == "possession":
                 score -= 0.02 * max(0, length - 15)
             if cross and self.position(mate) != "FW":
@@ -763,7 +790,7 @@ class MatchEngine:
         _, od = self.nearest_opponent(h)
         xg = expected_goals(d, angle, od < 2.0, header)
         fin = clamp(self.rating(h, "shooting"), 0.1, 1.0)
-        p_goal = clamp(xg * (0.6 + 0.75 * fin) * self.plan.finishing(side, self.minute()), 0.005, 0.95)
+        p_goal = clamp(xg * (0.7 + 0.8 * fin) * self.plan.finishing(side, self.minute()), 0.005, 0.95)
         if self.rng.random() < p_goal:
             outcome = "goal"
         else:
