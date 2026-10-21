@@ -280,7 +280,24 @@ async def audio(delivery_id: str) -> Response:
 
 
 # ---------------------------------------------------------------------- web UI (static Next.js export)
-if FRONTEND_DIR.is_dir():
+NOT_BUILT = """<!doctype html><meta charset="utf-8"><title>MatchGist</title>
+<body style="font-family:system-ui;background:#0b0f14;color:#e6edf5;max-width:640px;margin:10vh auto">
+<h1>MatchGist API is running</h1>
+<p>The website hasn't been built yet (no <code>frontend/out</code> folder). In PowerShell:</p>
+<pre style="background:#121821;padding:12px;border-radius:8px">cd frontend
+npm install
+npm run build</pre>
+<p>Then restart <code>uvicorn</code> and reload this page. The API docs are at <a style="color:#b8f35a"
+href="/api/docs">/api/docs</a>.</p></body>"""
+
+if not FRONTEND_DIR.is_dir():
+
+    @app.get("/", include_in_schema=False)
+    @app.get("/live", include_in_schema=False)
+    async def not_built() -> Response:
+        return Response(NOT_BUILT, media_type="text/html")
+
+else:
 
     @app.get("/live")
     async def live_page() -> FileResponse:
