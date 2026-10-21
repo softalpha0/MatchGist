@@ -5,10 +5,14 @@ Backends, picked from the environment (see ``.env.example``):
     + ``AZURE_OPENAI_DEPLOYMENT_FAST`` (Agent Framework ``OpenAIChatCompletionClient``).
   * A Foundry project with Entra ID: ``AZURE_AI_PROJECT_ENDPOINT`` (``FoundryChatClient`` +
     ``DefaultAzureCredential``; needs the ``foundry`` extra).
+  * Any OpenAI-compatible endpoint (e.g. a free tier): ``MATCHGIST_LLM_BASE_URL`` + ``MATCHGIST_LLM_API_KEY``
+    + ``MATCHGIST_LLM_MODEL`` (same ``OpenAIChatCompletionClient``, pointed at ``base_url``).
   * Offline: no keys, or ``MATCHGIST_OFFLINE=1``. A deterministic Agent Framework chat client that
     renders the multilingual templates, so the same agents and workflow run for free.
 
 Every call goes through :func:`call_agent`: 8 s timeout, 2 retries with backoff, then a fallback.
+:class:`CallCap` optionally caps model calls per minute and per day, so a free tier's quota or a public demo
+link can't run away; calls over the cap go straight to the templates.
 """
 
 from __future__ import annotations
@@ -18,6 +22,7 @@ import json
 import logging
 import os
 import time
+from collections import deque
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -42,6 +47,11 @@ class LLMSettings:
     timeout_s: float = 8.0
     retries: int = 2
     backoff_s: float = 0.5
+    compat_base_url: str | None = None
+    compat_key: str | None = None
+    compat_model: str | None = None
+    calls_per_minute: int = 0  # 0 = no cap
+    calls_per_day: int = 0
 
     @classmethod
     def from_env(cls) -> LLMSettings:
@@ -61,6 +71,11 @@ class LLMSettings:
             project_endpoint=env("AZURE_AI_PROJECT_ENDPOINT") or None,
             offline=(env("MATCHGIST_OFFLINE") or "").lower() in {"1", "true", "yes"},
             timeout_s=float(env("MATCHGIST_LLM_TIMEOUT") or 8),
+            compat_base_url=env("MATCHGIST_LLM_BASE_URL") or None,
+            compat_key=env("MATCHGIST_LLM_API_KEY") or None,
+            compat_model=env("MATCHGIST_LLM_MODEL") or None,
+            calls_per_minute=int(env("MATCHGIST_LLM_CALLS_PER_MINUTE") or 0),
+            calls_per_day=int(env("MATCHGIST_LLM_CALLS_PER_DAY") or 0),
         )
 
     @property
@@ -71,7 +86,52 @@ class LLMSettings:
             return "azure-openai"
         if self.project_endpoint:
             return "foundry"
+        if self.compat_base_url and self.compat_key and self.compat_model:
+            return "openai-compatible"
         return "offline"
+
+
+class CallCap:
+    """Sliding one-minute window plus a daily count, shared by every match in the process.
+
+    Free tiers reject bursts with 429s; refusing locally instead means the template fallback answers at once,
+    rather than after a timeout and two retries, so playback never stalls.
+    """
+
+    def __init__(self, per_minute: int = 0, per_day: int = 0, clock: Callable[[], float] = time.monotonic):
+        self.per_minute = per_minute
+        self.per_day = per_day
+        self.clock = clock
+        self._recent: deque[float] = deque()
+        self._day = time.strftime("%Y-%m-%d", time.gmtime())
+        self._today = 0
+
+    def take(self) -> str | None:
+        """Reserve one call. Returns None if allowed, otherwise why not."""
+        day = time.strftime("%Y-%m-%d", time.gmtime())
+        if day != self._day:
+            self._day, self._today = day, 0
+        if self.per_day and self._today >= self.per_day:
+            return f"daily model-call cap reached ({self.per_day})"
+        now = self.clock()
+        while self._recent and now - self._recent[0] >= 60:
+            self._recent.popleft()
+        if self.per_minute and len(self._recent) >= self.per_minute:
+            return f"model-call cap reached ({self.per_minute}/min)"
+        self._recent.append(now)
+        self._today += 1
+        return None
+
+
+_CAPS: dict[tuple[int, int], CallCap] = {}
+
+
+def shared_cap(settings: LLMSettings) -> CallCap:
+    """One cap per process (per setting), so concurrent demo matches share the provider's quota."""
+    key = (settings.calls_per_minute, settings.calls_per_day)
+    if key not in _CAPS:
+        _CAPS[key] = CallCap(*key)
+    return _CAPS[key]
 
 
 # ------------------------------------------------------------------ offline backend
@@ -156,6 +216,13 @@ def make_clients(settings: LLMSettings) -> tuple[Any, Any, str]:
                 else fast
             )
             return fast, digest, f"foundry:{settings.deployment_fast}"
+        if settings.mode == "openai-compatible":
+            from agent_framework.openai import OpenAIChatCompletionClient
+
+            fast = OpenAIChatCompletionClient(
+                model=settings.compat_model, api_key=settings.compat_key, base_url=settings.compat_base_url
+            )
+            return fast, fast, f"openai-compatible:{settings.compat_model}"
     except Exception as exc:  # missing package or bad config: keep the feed alive
         log.warning("model backend unavailable (%s); using offline templates", exc)
     offline = OfflineChatClient()

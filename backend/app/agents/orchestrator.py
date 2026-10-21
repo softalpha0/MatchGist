@@ -26,7 +26,7 @@ from agent_framework import Executor, WorkflowBuilder, WorkflowContext, handler
 from app.agents import compressor, digest, explainer, localizer
 from app.agents.budget_guard import BUNDLE_WINDOW_MIN, Decision, decide
 from app.agents.fallbacks import LATIN, T, compose, fit_text, render, strip_accents
-from app.agents.llm import LLMSettings, call_agent, make_clients
+from app.agents.llm import AgentResult, LLMSettings, call_agent, make_clients, shared_cap
 from app.agents.ranker import Ranking, rank
 from app.agents.verifier import Verdict, verify
 from app.channels.adapters import overlay_cue
@@ -103,6 +103,7 @@ class Orchestrator:
         self.emit = emit
         self.settings = settings or LLMSettings.from_env()
         fast, slow, self.model_label = clients or make_clients(self.settings)
+        self.cap = shared_cap(self.settings)
         self.agents = {
             "explainer": explainer.build(fast),
             "localizer": localizer.build(fast),
@@ -125,6 +126,9 @@ class Orchestrator:
 
     async def call(self, agent: str, message: str):  # type: ignore[no-untyped-def]
         st = self.settings
+        refused = self.cap.take()
+        if refused:  # a failed result, so the caller's usual template fallback (and its log line) runs
+            return AgentResult("", False, 0, 0, refused)
         return await call_agent(
             self.agents[agent], message, timeout_s=st.timeout_s, retries=st.retries, backoff_s=st.backoff_s
         )

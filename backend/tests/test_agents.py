@@ -4,9 +4,9 @@ from typing import Any
 import pytest
 from agent_framework import BaseChatClient, ChatResponse, Message
 
-from app.agents import fallbacks
+from app.agents import fallbacks, llm
 from app.agents.budget_guard import decide, threshold
-from app.agents.llm import LLMSettings, OfflineChatClient
+from app.agents.llm import CallCap, LLMSettings, OfflineChatClient, make_clients
 from app.agents.orchestrator import Orchestrator
 from app.agents.ranker import rank
 from app.agents.verifier import normalise_digits, verify
@@ -286,3 +286,63 @@ def test_hallucinating_model_is_caught_by_verifier():
         for n, p in out
         if n == "agent_event"
     )
+
+
+# ------------------------------------------------------------------ backends and call caps
+
+
+def test_openai_compatible_mode_needs_url_key_and_model() -> None:
+    base = dict(compat_base_url="https://llm.example/v1", compat_key="k", compat_model="m")
+    assert LLMSettings(None, None, "x", None, "v", None, offline=False, **base).mode == "openai-compatible"
+    partial = {**base, "compat_model": None}
+    assert LLMSettings(None, None, "x", None, "v", None, offline=False, **partial).mode == "offline"
+    assert LLMSettings(None, None, "x", None, "v", None, offline=True, **base).mode == "offline"
+
+
+def test_openai_compatible_client_is_built() -> None:
+    s = LLMSettings(
+        None, None, "x", None, "v", None, offline=False,
+        compat_base_url="https://llm.example/v1", compat_key="k", compat_model="m",
+    )  # fmt: skip
+    fast, digest_client, label = make_clients(s)
+    assert label == "openai-compatible:m"
+    assert not isinstance(fast, OfflineChatClient) and digest_client is fast
+
+
+def test_call_cap_per_minute_and_per_day() -> None:
+    now = [0.0]
+    cap = CallCap(per_minute=2, per_day=3, clock=lambda: now[0])
+    assert cap.take() is None and cap.take() is None
+    assert "2/min" in (cap.take() or "")
+    now[0] = 61
+    assert cap.take() is None
+    assert "daily" in (cap.take() or "")
+    assert CallCap().take() is None  # no caps configured
+
+
+def test_capped_calls_fall_back_to_templates_and_the_feed_continues() -> None:
+    capped = LLMSettings(
+        None, None, "x", None, "v", None, offline=True, timeout_s=1, retries=0, calls_per_minute=1
+    )
+    llm._CAPS.clear()
+
+    async def go() -> list[tuple[str, dict]]:
+        m = generate_match(42, "late_drama")
+        state = MatchState(m)
+        analyzer = MatchAnalyzer(state)
+        out: list[tuple[str, dict]] = []
+        orch = Orchestrator(state, load_fans(), lambda n, p: out.append((n, p)), capped)
+        for ev in m.events:
+            for mo in analyzer.feed(ev):
+                await orch.on_moment(mo)
+            if ev.type != "full_time":
+                await orch.tick(state.minute)
+        return out
+
+    try:
+        out = asyncio.run(go())
+    finally:
+        llm._CAPS.clear()
+    details = [p["detail"] for n, p in out if n == "agent_event"]
+    assert any("model-call cap reached" in d for d in details)
+    assert sum(1 for n, _ in out if n == "delivery") > 20  # the feed kept going
