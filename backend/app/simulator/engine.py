@@ -102,8 +102,11 @@ def goal_angle(x: float, y: float, goal_x: float) -> float:
 
 
 def pressure_from_distance(d: float) -> float:
-    """0 when the nearest opponent is 5 m or more away, 1 when they are on top of the player."""
-    return round(clamp(1 - (d - 0.5) / 4.5, 0.0, 1.0), 2)
+    """0 when the nearest opponent is 3.5 m or more away, 1 when they are on top of the player.
+
+    Convex, so only genuinely tight challenges read as high pressure (2 m is 0.25, 1 m is 0.69).
+    """
+    return round(clamp((3.5 - d) / 3.0, 0.0, 1.0) ** 2, 2)
 
 
 @dataclass
@@ -600,7 +603,9 @@ class MatchEngine:
         angle = goal_angle(x, y, gx)
         shot_range = 28 if self.position(h) == "MF" else 26  # midfielders try their luck from distance
         if dgoal < shot_range and self.position(h) != "GK":
-            p_shoot = clamp((shot_range - dgoal) / 25 * 0.2 + angle * 0.08, 0, 0.6)
+            # quadratic in closeness: players work the ball nearer goal rather than shooting on sight
+            closeness = (shot_range - dgoal) / shot_range
+            p_shoot = clamp(closeness**2 * 0.5 + angle * 0.08, 0, 0.6)
             if self.rng.random() < p_shoot * self.plan.shooting(side, minute):
                 self._shoot(h, header=False)
                 return
@@ -790,7 +795,7 @@ class MatchEngine:
         _, od = self.nearest_opponent(h)
         xg = expected_goals(d, angle, od < 2.0, header)
         fin = clamp(self.rating(h, "shooting"), 0.1, 1.0)
-        p_goal = clamp(xg * (0.7 + 0.8 * fin) * self.plan.finishing(side, self.minute()), 0.005, 0.95)
+        p_goal = clamp(xg * (0.6 + 0.6 * fin) * self.plan.finishing(side, self.minute()), 0.005, 0.95)
         if self.rng.random() < p_goal:
             outcome = "goal"
         else:
