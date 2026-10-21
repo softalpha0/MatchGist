@@ -77,9 +77,9 @@ Submitted through the project page on Innovation Studio.
 | Criterion | What judges look for | How we score |
 |---|---|---|
 | Technological implementation | Creative, optimized synthetic data; good engineering practice; effective use of hero tech; clean, documented, maintainable code | Seeded simulator, tests, CI, typed code, README, Foundry + Agent Framework at the core |
-| Agentic design and innovation | Creative agentic patterns; orchestration, MCP, or multi-agent collaboration; novel AI use | Specialised agents with clear roles, shared state, handoffs, visible failure recovery |
-| Real-world impact | Significant problem; production-ready potential; impact on users | Overlay cue format a broadcaster could consume; latency and cost notes; fallbacks |
-| User experience and presentation | Intuitive UX; clear demo video; balance of frontend and backend | Polished live UI; Analyst vs Fan flip in the video |
+| Agentic design and innovation | Creative agentic patterns; orchestration, MCP, or multi-agent collaboration; novel AI use | Budget Guard plans across the whole match; Compressor works against hard byte limits; Verifier loop; per-fan parallel chains; visible decisions and recovery |
+| Real-world impact | Significant problem; production-ready potential; impact on users | Serves fans the big-screen tools ignore (mobile data, roaming, basic phones, at work); real channel constraints (SMS encoding, voice note size); overlay cues for broadcasters too |
+| User experience and presentation | Intuitive UX; clear demo video; balance of frontend and backend | One goal landing six ways on six devices, with live data meters |
 | Category fit | Matches the chosen category description | See §6 |
 
 Tie-break order follows the criteria order above, so **technological implementation matters most in a tie**.
@@ -117,3 +117,28 @@ Also referenced in the rules: Microsoft Learn (https://learn.microsoft.com) and 
 - Competition size at the time: **1,749 registrants, 472 projects.** Polish and a clear demo matter.
 - Repeats the data rule: synthetic, football-realistic data only; no real Premier League data is provided.
 - Says the full challenge brief and detailed project requirements are under the **Challenge** menu. Add anything new from there to this file.
+
+## 9. Competitor landscape (review of ~470 projects, Oct 21)
+
+**The crowded middle (avoid looking like this):** multi-agent pipeline + evidence-checked explanations + analyst/casual modes + multilingual + broadcast overlays. Dozens of entries: many named MatchMind, MatchLens, PitchPulse, Pitchside, The Gallery, plus six projects using "Touchline". Verifier-style "every claim is proven" is now common, so it's table stakes, not a differentiator.
+
+**Already-claimed niches:**
+
+| Niche | Projects |
+|---|---|
+| Auto video reels / highlights | auto-shorts, PitchClip AI, Dugout, Footlights, FansReel |
+| Accessibility / spatial audio | Audio Eyes, Blind-side, Sauti |
+| Swahili / Arabic / Urdu / Japanese | Sauti, Msimulizi, Matchday Crew, EveryFan, MatchMind Booth |
+| What-if / counterfactual | Second Guess, PULSE XI, ParallelPitch, Chronos XI, ReplayAI |
+| Rival-fan or pundit debate | Both Ends, Pundit Studio |
+| Referee explanations | Matchday Explainer, CaptionVAR Live |
+| Human-in-the-loop control room | Control Room IQ, Gallery, MatchDesk |
+| Prediction / odds | Knife-Edge, Lasso, Risk Radar |
+| New-fan teaching | Coach in Your Ear, Standfolk |
+
+**Open lane we take:** personalization by **constraint** (channel, data budget, ping limit, device) with delivery over SMS, chat, voice notes, watch, and push. No project found covers it.
+
+**How to stand out in judging:**
+1. Lead every description and the video with the constraint angle, not "multi-agent explainable insights" (everyone says that).
+2. Show numbers judges can check: SMS segments, KB used, pings left.
+3. Still cover the standard pipeline fully (broadcast overlay channel, analyst mode) so we pass Stage 1 on theme.
