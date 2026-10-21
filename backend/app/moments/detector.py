@@ -51,7 +51,11 @@ class MomentDetector:
             "score": f"{s.score[0]}-{s.score[1]}",
             "home": s.club_names[s.home_id],
             "away": s.club_names[s.away_id],
+            "home_code": s.home_id,
+            "away_code": s.away_id,
         }
+        if team:
+            base["team_code"] = team
         return Moment(
             moment_id=f"{s.match.match_id}-mom-{self.n:04d}",
             type=mtype,
@@ -107,7 +111,7 @@ class MomentDetector:
                         },
                         ev.team_id,
                         ev.player_id,
-                    )
+                    ).model_copy(update={"involved_player_ids": [ev.player_id, ev.receiver_id]})
                 )
         elif ev.type == "shot":
             assert ev.team_id and ev.player_id
@@ -125,7 +129,11 @@ class MomentDetector:
                     facts["assist_difficulty"] = self.stats.last_pass_difficulty.get(assist.event_id)
                 facts["player_goals"] = s.players[ev.player_id].goals
                 facts["momentum"] = s.momentum() if ev.team_id == s.home_id else -s.momentum()
-                out.append(self._moment("goal", ev, facts, ev.team_id, ev.player_id))
+                goal = self._moment("goal", ev, facts, ev.team_id, ev.player_id)
+                goal.involved_player_ids = [ev.player_id]
+                if assist and assist.player_id:
+                    goal.involved_player_ids.append(assist.player_id)
+                out.append(goal)
             elif ev.xg >= BIG_CHANCE_XG:
                 out.append(self._moment("big_chance", ev, facts, ev.team_id, ev.player_id))
         elif ev.type == "foul" and ev.card in ("red", "yellow"):

@@ -40,6 +40,7 @@ class Moment(BaseModel):
     minute: int
     team_id: str | None = None
     player_id: str | None = None
+    involved_player_ids: list[str] = Field(default_factory=list, description="scorer, assister, receiver")
     base_score: int = Field(ge=0, le=100)
     facts: dict[str, Any] = Field(default_factory=dict, description="the only numbers agents may cite")
     event_id: str | None = None
