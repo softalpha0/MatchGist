@@ -1,0 +1,88 @@
+{
+  "fans": [
+    {
+      "fan_id": "fan_london",
+      "display_name": "Studio analyst, London",
+      "language": "en",
+      "mode": "analyst",
+      "favorite_club": null,
+      "favorite_player": null,
+      "focus_metric": "xg",
+      "channel": "broadcast",
+      "data_budget_kb": null,
+      "max_pings": null,
+      "only_if_involved": false,
+      "quiet_after_minute": null
+    },
+    {
+      "fan_id": "fan_jakarta",
+      "display_name": "Commuter, Jakarta",
+      "language": "id",
+      "mode": "casual",
+      "favorite_club": "RIV",
+      "favorite_player": null,
+      "focus_metric": null,
+      "channel": "sms",
+      "data_budget_kb": 1024,
+      "max_pings": 4,
+      "only_if_involved": true,
+      "quiet_after_minute": null
+    },
+    {
+      "fan_id": "fan_lagos",
+      "display_name": "Fan, Lagos",
+      "language": "pcm",
+      "mode": "club_focus",
+      "favorite_club": "NOR",
+      "favorite_player": null,
+      "focus_metric": null,
+      "channel": "voice",
+      "data_budget_kb": 2048,
+      "max_pings": 6,
+      "only_if_involved": false,
+      "quiet_after_minute": null
+    },
+    {
+      "fan_id": "fan_saopaulo",
+      "display_name": "Office worker, São Paulo",
+      "language": "pt-BR",
+      "mode": "casual",
+      "favorite_club": null,
+      "favorite_player": null,
+      "focus_metric": null,
+      "channel": "push",
+      "data_budget_kb": 200,
+      "max_pings": 3,
+      "only_if_involved": false,
+      "quiet_after_minute": null
+    },
+    {
+      "fan_id": "fan_delhi",
+      "display_name": "Student, Delhi",
+      "language": "hi",
+      "mode": "player_focus",
+      "favorite_club": "RIV",
+      "favorite_player": "RIV-10",
+      "focus_metric": null,
+      "channel": "sms",
+      "data_budget_kb": 1536,
+      "max_pings": null,
+      "only_if_involved": false,
+      "quiet_after_minute": null
+    },
+    {
+      "fan_id": "fan_dubai",
+      "display_name": "Fan roaming in Dubai",
+      "language": "ar",
+      "mode": "casual",
+      "favorite_club": null,
+      "favorite_player": null,
+      "focus_metric": null,
+      "channel": "watch",
+      "data_budget_kb": 300,
+      "max_pings": 5,
+      "only_if_involved": false,
+      "quiet_after_minute": null
+    }
+  ]
+}

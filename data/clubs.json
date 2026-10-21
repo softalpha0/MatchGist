@@ -1,0 +1,380 @@
+{
+  "clubs": [
+    {
+      "club_id": "RIV",
+      "name": "Riverside Athletic",
+      "short_name": "RIV",
+      "colors": [
+        "#1d4ed8",
+        "#f8fafc"
+      ],
+      "style": "possession",
+      "players": [
+        {
+          "player_id": "RIV-01",
+          "name": "Mikael Brandvold",
+          "shirt_number": 1,
+          "position": "GK",
+          "starter": true,
+          "pace": 42,
+          "passing": 59,
+          "shooting": 27,
+          "defending": 79
+        },
+        {
+          "player_id": "RIV-02",
+          "name": "Iñigo Larrazabal",
+          "shirt_number": 2,
+          "position": "DF",
+          "starter": true,
+          "pace": 62,
+          "passing": 64,
+          "shooting": 50,
+          "defending": 82
+        },
+        {
+          "player_id": "RIV-04",
+          "name": "Kwabena Darko-Mensah",
+          "shirt_number": 4,
+          "position": "DF",
+          "starter": true,
+          "pace": 77,
+          "passing": 74,
+          "shooting": 48,
+          "defending": 87
+        },
+        {
+          "player_id": "RIV-05",
+          "name": "Lukas Brenneisen",
+          "shirt_number": 5,
+          "position": "DF",
+          "starter": true,
+          "pace": 73,
+          "passing": 64,
+          "shooting": 33,
+          "defending": 71
+        },
+        {
+          "player_id": "RIV-03",
+          "name": "Rafael Antunes Beira",
+          "shirt_number": 3,
+          "position": "DF",
+          "starter": true,
+          "pace": 62,
+          "passing": 66,
+          "shooting": 36,
+          "defending": 83
+        },
+        {
+          "player_id": "RIV-06",
+          "name": "Chidubem Nwachukwu-Bello",
+          "shirt_number": 6,
+          "position": "MF",
+          "starter": true,
+          "pace": 61,
+          "passing": 85,
+          "shooting": 65,
+          "defending": 61
+        },
+        {
+          "player_id": "RIV-08",
+          "name": "Hiroki Tanabe-Ross",
+          "shirt_number": 8,
+          "position": "MF",
+          "starter": true,
+          "pace": 73,
+          "passing": 78,
+          "shooting": 66,
+          "defending": 66
+        },
+        {
+          "player_id": "RIV-10",
+          "name": "Matteo Calvisano",
+          "shirt_number": 10,
+          "position": "MF",
+          "starter": true,
+          "pace": 73,
+          "passing": 86,
+          "shooting": 57,
+          "defending": 65
+        },
+        {
+          "player_id": "RIV-07",
+          "name": "Thiago Esquível",
+          "shirt_number": 7,
+          "position": "FW",
+          "starter": true,
+          "pace": 74,
+          "passing": 76,
+          "shooting": 87,
+          "defending": 38
+        },
+        {
+          "player_id": "RIV-09",
+          "name": "Dmytro Lysenko-Vale",
+          "shirt_number": 9,
+          "position": "FW",
+          "starter": true,
+          "pace": 81,
+          "passing": 73,
+          "shooting": 74,
+          "defending": 47
+        },
+        {
+          "player_id": "RIV-11",
+          "name": "Kalani Akana",
+          "shirt_number": 11,
+          "position": "FW",
+          "starter": true,
+          "pace": 81,
+          "passing": 59,
+          "shooting": 81,
+          "defending": 40
+        },
+        {
+          "player_id": "RIV-13",
+          "name": "Cian Moriarty-Hale",
+          "shirt_number": 13,
+          "position": "GK",
+          "starter": false,
+          "pace": 53,
+          "passing": 62,
+          "shooting": 13,
+          "defending": 75
+        },
+        {
+          "player_id": "RIV-15",
+          "name": "Yusuf Karadağlı",
+          "shirt_number": 15,
+          "position": "DF",
+          "starter": false,
+          "pace": 77,
+          "passing": 74,
+          "shooting": 48,
+          "defending": 72
+        },
+        {
+          "player_id": "RIV-14",
+          "name": "Anouar Belkhadem",
+          "shirt_number": 14,
+          "position": "MF",
+          "starter": false,
+          "pace": 74,
+          "passing": 86,
+          "shooting": 70,
+          "defending": 67
+        },
+        {
+          "player_id": "RIV-12",
+          "name": "Seamus Corrigan-Doyle",
+          "shirt_number": 12,
+          "position": "MF",
+          "starter": false,
+          "pace": 77,
+          "passing": 78,
+          "shooting": 68,
+          "defending": 73
+        },
+        {
+          "player_id": "RIV-17",
+          "name": "Bastien Morvan",
+          "shirt_number": 17,
+          "position": "FW",
+          "starter": false,
+          "pace": 87,
+          "passing": 75,
+          "shooting": 86,
+          "defending": 29
+        }
+      ]
+    },
+    {
+      "club_id": "NOR",
+      "name": "Northgate Rovers",
+      "short_name": "NOR",
+      "colors": [
+        "#b91c1c",
+        "#111827"
+      ],
+      "style": "direct",
+      "players": [
+        {
+          "player_id": "NOR-01",
+          "name": "Henrik Solvang",
+          "shirt_number": 1,
+          "position": "GK",
+          "starter": true,
+          "pace": 57,
+          "passing": 56,
+          "shooting": 15,
+          "defending": 64
+        },
+        {
+          "player_id": "NOR-02",
+          "name": "Mateus Brandão Lyra",
+          "shirt_number": 2,
+          "position": "DF",
+          "starter": true,
+          "pace": 75,
+          "passing": 60,
+          "shooting": 46,
+          "defending": 84
+        },
+        {
+          "player_id": "NOR-03",
+          "name": "Oluwaseun Adebanjo-Cole",
+          "shirt_number": 3,
+          "position": "DF",
+          "starter": true,
+          "pace": 63,
+          "passing": 72,
+          "shooting": 40,
+          "defending": 72
+        },
+        {
+          "player_id": "NOR-04",
+          "name": "Piet van Rossenberg",
+          "shirt_number": 4,
+          "position": "DF",
+          "starter": true,
+          "pace": 73,
+          "passing": 72,
+          "shooting": 50,
+          "defending": 77
+        },
+        {
+          "player_id": "NOR-05",
+          "name": "Kyrylo Bondar",
+          "shirt_number": 5,
+          "position": "DF",
+          "starter": true,
+          "pace": 76,
+          "passing": 69,
+          "shooting": 42,
+          "defending": 86
+        },
+        {
+          "player_id": "NOR-06",
+          "name": "Jae-won Seo",
+          "shirt_number": 6,
+          "position": "MF",
+          "starter": true,
+          "pace": 77,
+          "passing": 85,
+          "shooting": 67,
+          "defending": 68
+        },
+        {
+          "player_id": "NOR-08",
+          "name": "Emeka Obiora-Lane",
+          "shirt_number": 8,
+          "position": "MF",
+          "starter": true,
+          "pace": 67,
+          "passing": 79,
+          "shooting": 63,
+          "defending": 55
+        },
+        {
+          "player_id": "NOR-10",
+          "name": "Lorenzo Fabbrini-Neri",
+          "shirt_number": 10,
+          "position": "MF",
+          "starter": true,
+          "pace": 62,
+          "passing": 74,
+          "shooting": 69,
+          "defending": 71
+        },
+        {
+          "player_id": "NOR-07",
+          "name": "Nnamdi Okeke-Rhodes",
+          "shirt_number": 7,
+          "position": "FW",
+          "starter": true,
+          "pace": 87,
+          "passing": 70,
+          "shooting": 76,
+          "defending": 37
+        },
+        {
+          "player_id": "NOR-09",
+          "name": "Joaquín Barrenechea",
+          "shirt_number": 9,
+          "position": "FW",
+          "starter": true,
+          "pace": 87,
+          "passing": 73,
+          "shooting": 86,
+          "defending": 44
+        },
+        {
+          "player_id": "NOR-11",
+          "name": "Ravi Khatri-Sen",
+          "shirt_number": 11,
+          "position": "FW",
+          "starter": true,
+          "pace": 85,
+          "passing": 76,
+          "shooting": 71,
+          "defending": 38
+        },
+        {
+          "player_id": "NOR-23",
+          "name": "Abdoulaye Sarr-Diouf",
+          "shirt_number": 23,
+          "position": "GK",
+          "starter": false,
+          "pace": 49,
+          "passing": 63,
+          "shooting": 14,
+          "defending": 77
+        },
+        {
+          "player_id": "NOR-22",
+          "name": "Ismael Ferrandis",
+          "shirt_number": 22,
+          "position": "DF",
+          "starter": false,
+          "pace": 75,
+          "passing": 65,
+          "shooting": 47,
+          "defending": 74
+        },
+        {
+          "player_id": "NOR-16",
+          "name": "Tariq Al-Hamdani",
+          "shirt_number": 16,
+          "position": "MF",
+          "starter": false,
+          "pace": 74,
+          "passing": 85,
+          "shooting": 57,
+          "defending": 63
+        },
+        {
+          "player_id": "NOR-18",
+          "name": "Callum Fairbairn",
+          "shirt_number": 18,
+          "position": "MF",
+          "starter": false,
+          "pace": 76,
+          "passing": 81,
+          "shooting": 58,
+          "defending": 61
+        },
+        {
+          "player_id": "NOR-19",
+          "name": "Mathis Delacour",
+          "shirt_number": 19,
+          "position": "FW",
+          "starter": false,
+          "pace": 85,
+          "passing": 63,
+          "shooting": 84,
+          "defending": 29
+        }
+      ]
+    }
+  ]
+}
