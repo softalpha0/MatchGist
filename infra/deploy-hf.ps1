@@ -27,13 +27,12 @@ $work = Join-Path ([IO.Path]::GetTempPath()) ("matchgist-space-" + [guid]::NewGu
 git clone "https://huggingface.co/spaces/$Space" $work
 if ($LASTEXITCODE -ne 0) { throw "Could not clone the Space. Check the name and that it exists." }
 
-# Replace the Space's files with the committed tree (legacy/ is left out: it's not part of the app)
+# Replace the Space's files with the committed tree
 Get-ChildItem $work -Force | Where-Object { $_.Name -ne ".git" } | Remove-Item -Recurse -Force
 $tar = Join-Path $work "src.tar"
 git -C $root archive --format=tar -o $tar $Ref
 tar -xf $tar -C $work
 Remove-Item $tar
-if (Test-Path (Join-Path $work "legacy")) { Remove-Item (Join-Path $work "legacy") -Recurse -Force }
 
 # Spaces read their settings from YAML at the top of README.md
 $header = @"

@@ -66,7 +66,6 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6: Azure sign-up blocked, so a free p
    then `infra/deploy.ps1` after a budget alert, per `docs/deploy.md`.
 5. **Video** (< 2 min) following SPEC section 16, then **submit** by Tue Oct 27, 11:00 PM WAT.
 6. Housekeeping before submission (ask me):
-   - delete `legacy/`
    - decide whether `SPEC.md`, `HACKATHON_BRIEF.md` and `CLAUDE.md` stay in the public repo (they mention the
      real league's name in the challenge title)
 7. Stretch (not done): real SMS via Azure Communication Services.

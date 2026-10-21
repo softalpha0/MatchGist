@@ -48,7 +48,7 @@ Gemini (Google AI Studio) and OpenRouter `:free` models also expose OpenAI-compa
    .\infra\deploy-hf.ps1 -Space <your-hf-username>/matchgist
    ```
    Git asks for a username and password: use your Hugging Face username and the token.
-   The script pushes only committed files (never `.env`), leaves out `legacy/`, and adds the Space header to
+   The script pushes only committed files (never `.env`) and adds the Space header to
    the README copy it pushes.
 5. Watch the build under the Space's **Logs** tab (a few minutes). Then open
    `https://<username>-matchgist.hf.space/live` (the Space page shows the exact URL under **Embed this Space**).
