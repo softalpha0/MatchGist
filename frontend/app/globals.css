@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pitch: #0f3d2a;
+  --color-pitch-line: #3f7a5c;
+  --color-ink: #0b0f14;
+  --color-panel: #121821;
+  --color-panel-2: #18212d;
+  --color-line: #253142;
+  --color-accent: #b8f35a;
+  --color-accent-2: #5ad1f3;
+  --color-riv: #3b82f6;
+  --color-nor: #ef4444;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", ui-monospace, monospace;
+}
+
+html,
+body {
+  background: var(--color-ink);
+  color: #e6edf5;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #2b384a;
+  border-radius: 6px;
+}
+
+@keyframes pop {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop 0.35s ease-out;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave-bar {
+  animation: wave 1s ease-in-out infinite;
+  transform-origin: center;
+}

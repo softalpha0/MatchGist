@@ -26,6 +26,20 @@ from app.channels.sms_encoding import analyze_sms, gsm_safe
 
 LANGUAGES = ("en", "hi", "id", "pt-BR", "ar", "pcm")
 LATIN = {"en", "id", "pt-BR", "pcm"}
+RTL = {"ar"}
+NAME_FIELDS = (
+    "player",
+    "surname",
+    "receiver",
+    "assist",
+    "team",
+    "opponent",
+    "home",
+    "away",
+    "top_performer",
+    "pressing_team",
+    "pressed_team",
+)
 
 T: dict[str, dict[str, dict[str, str]]] = {
     "en": {
@@ -398,6 +412,11 @@ def derive(facts: dict[str, Any], language: str) -> dict[str, Any]:
         d["surname"] = player.split()[-1]
     if "outcome" in facts:
         d["outcome_text"] = T[lang]["_outcome"].get(facts["outcome"], facts["outcome"])
+    if lang in RTL:
+        # isolate Latin names inside right-to-left text so "Okeke-Rhodes" isn't split by the bidi algorithm
+        for k in NAME_FIELDS:
+            if isinstance(d.get(k), str) and d[k]:
+                d[k] = f"\u2068{d[k]}\u2069"
     return d
 
 

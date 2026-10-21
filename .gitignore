@@ -11,3 +11,5 @@ matches/*.jsonl
 dist/
 .next/
 .azure/
+frontend/out/
+*.tsbuildinfo
