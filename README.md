@@ -11,7 +11,7 @@ their data budget and ping limit.
 > Entry for Microsoft's *Inside the Game* Developer Hackathon. **All clubs, players, matches and fans are
 > fictional. Synthetic data only.**
 
-- **Live demo:** `<add your Azure Container Apps URL>` (no login). Open `/live`, pick a storyline, press *Kick off*.
+- **Live demo:** `<add your live URL>` (no login). Open `/live`, pick a storyline, press *Kick off*.
 - **Demo video:** `<add the YouTube link>`
 
 Same goal, six fans:
@@ -44,7 +44,7 @@ Details in [docs/architecture.md](docs/architecture.md).
 | Technology | Where |
 |---|---|
 | **Microsoft Agent Framework** | `backend/app/agents/`: `Agent`s for the Explainer, Localizer, Compressor and Digest; a `WorkflowBuilder` graph per fan with conditional edges and the Verifier→Compressor retry loop (`orchestrator.py`) |
-| **Microsoft Foundry** | Hosts the chat model behind every language agent (`llm.py`: Azure OpenAI with a key, or a Foundry project with Entra ID) |
+| **Microsoft Foundry** | Hosts the chat model behind every language agent (`llm.py`: Azure OpenAI with a key, or a Foundry project with Entra ID). The same Agent Framework client also runs against any OpenAI-compatible endpoint, with per-minute and per-day call caps |
 | **Azure AI Speech** | Neural text-to-speech voice notes over the REST API, with real Ogg/Opus duration and size (`voice/tts.py`) |
 | **Azure Container Apps** | One container serving the API, the SSE stream and the web UI (`Dockerfile`, `infra/deploy.ps1`) |
 | **GitHub Actions** | Lint, tests, frontend build, container smoke test, publish to GitHub Container Registry |
@@ -58,7 +58,7 @@ cd backend
 & "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe" -m venv .venv    # or: py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1          # if blocked: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 pip install -e ".[dev,foundry]"
-pytest -q                             # 170+ tests, all offline
+pytest -q                             # 175 tests, all offline
 uvicorn app.main:app --reload         # API on http://127.0.0.1:8000
 ```
 
@@ -76,7 +76,9 @@ open http://localhost:3000.
 
 **No keys needed.** Without Azure settings, the agents run on a deterministic offline backend: the same agents
 and workflow, rendering multilingual templates. To use Foundry and Speech, copy `.env.example` to `.env` and fill
-it in (see [docs/deploy.md](docs/deploy.md)). `http://127.0.0.1:8000/config` shows which backend is active.
+it in (see [docs/deploy.md](docs/deploy.md)). No Azure account? Any OpenAI-compatible free tier works, and the
+app can be hosted on a free Hugging Face Space: see [docs/deploy-free.md](docs/deploy-free.md).
+`http://127.0.0.1:8000/config` shows which backend is active.
 
 Other useful commands:
 
@@ -152,6 +154,7 @@ SMS length is measured with a real GSM-7 encoder check, never with `len()`:
 | `data/` | Fictional clubs (Riverside Athletic, Northgate Rovers) and the six personas |
 | `docs/` | Architecture, event schema, deploy guide, progress |
 | `infra/deploy.ps1` | Azure Container Apps deployment (PowerShell) |
+| `infra/deploy-hf.ps1` | Free deployment to a Hugging Face Docker Space (PowerShell) |
 
 ## Statement
 

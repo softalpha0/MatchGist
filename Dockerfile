@@ -19,7 +19,8 @@ COPY backend/app backend/app
 RUN pip install -e "./backend[foundry]"
 COPY data data
 COPY --from=web /web/out frontend/out
-RUN useradd --create-home --uid 10001 matchgist
+# uid 1000: Hugging Face Spaces runs containers as this user
+RUN useradd --create-home --uid 1000 matchgist
 USER matchgist
 WORKDIR /app/backend
 EXPOSE 8000

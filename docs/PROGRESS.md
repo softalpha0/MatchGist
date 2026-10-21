@@ -1,6 +1,6 @@
 # Progress
 
-_Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure accounts)._
+_Last updated: Wed Oct 21 (M3–M5 built; M6: Azure sign-up blocked, so a free path was added)._
 
 ## Milestones (SPEC section 15)
 
@@ -11,7 +11,7 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure acc
 | M3 | Fri Oct 23 | Agents: Explainer, Ranker, Budget Guard, Localizer, Compressor, Verifier, fallbacks | ✅ done (offline-verified; needs a live model check) |
 | M4 | Sat Oct 24 | Voice (Azure AI Speech), Digest, broadcast overlay cues | ✅ built; voice needs a Speech key to verify |
 | M5 | Sun Oct 25 | Frontend | ✅ done: landing page + live demo |
-| M6 | Mon Oct 26 | Deploy + docs | 🟡 Dockerfile, CI image publish, deploy script and docs ready; **you** run the deploy |
+| M6 | Mon Oct 26 | Deploy + docs | 🟡 Azure and free (Hugging Face) deploy scripts and docs ready; **you** run the deploy |
 | M7 | Tue Oct 27 | Video + submit (by 11:00 PM WAT) | ☐ |
 
 ## What's built
@@ -19,7 +19,8 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure acc
 - **Agents** (`backend/app/agents/`): Explainer once per moment. Then, per fan in parallel, a Microsoft Agent
   Framework workflow: Ranker → Budget Guard → Localizer → Compressor ⇄ Verifier → deliver, plus a Digest at full
   time. Each model call has an 8 s timeout and 2 retries, falling back to per-channel, per-language templates
-  (9 moment types × 6 languages). Backends: Azure OpenAI (key), Foundry project (Entra ID), or offline.
+  (9 moment types × 6 languages). Backends: Azure OpenAI (key), Foundry project (Entra ID), any
+  OpenAI-compatible endpoint, or offline. Optional per-minute and per-day call caps fall straight to templates.
 - **Budget Guard:** SPEC 9.2 plus planning. The last two pings are kept for a goal and the digest, close moments
   are bundled within 2 minutes, half-time and red cards send immediately, and every decision carries a reason.
 - **Verifier:** numbers must come from the moment's facts (digits in any script); SMS segment allowance from the
@@ -33,7 +34,7 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure acc
   pitch and overlay, devices with data meters, pings and binding limit, System panel, Add a fan.
 - **Ops:** multi-stage Dockerfile, CI (backend, frontend, image build + smoke test + GHCR publish),
   `infra/deploy.ps1`, `docs/deploy.md`, `docs/architecture.md`, full README.
-- **Tests:** 171 backend tests, all offline. They include a model outage, a hallucinating model, the Hindi SMS
+- **Tests:** 175 backend tests, all offline. They include a model outage, a hallucinating model, the Hindi SMS
   reject-and-rewrite loop, and budget limits for every persona.
 
 ## Decisions taken (new in M3–M5)
@@ -49,17 +50,20 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6 packaged, waiting on your Azure acc
 | Arabic text isolates Latin names (U+2068/U+2069) | "Okeke-Rhodes" was split by the bidi algorithm on the watch |
 | Next.js static export served by FastAPI | One container, one URL, no Node server in production |
 | Image published to GitHub Container Registry | No Azure Container Registry cost |
+| OpenAI-compatible backend + free Hugging Face Space | Azure sign-up says "not eligible" (free and pay-as-you-go); GitHub Models was retired in July 2026 |
+| Model-call caps (per minute, per day) | Free tiers rate-limit; refusing locally avoids timeouts and keeps a public link from burning the quota |
+| Container user uid 1000 | Hugging Face Spaces runs containers as uid 1000 |
 
 ## What's left (yours unless noted)
 
 1. **Push the code** (you push manually) and make the GitHub repo public. Decide the repo name; the landing
    page's "Read the code" link points at `github.com/softalpha0/matchgist`.
-2. **Foundry model:** deploy a small chat model. ⚠️ `gpt-4o-mini` is reportedly retired on Azure in 2026; pick the
-   current mini model. Put the endpoint, key and deployment in `.env`, then run a match and check `/config` says
-   `azure-openai`. I'll then tune prompts against real output (the agent code hasn't run against a live model yet).
-3. **Speech:** create a free F0 Speech resource, set the key and region, and confirm the voices exist.
-4. **Deploy** with `infra/deploy.ps1` (after the $50 budget alert). Put the URL in the README. Open `/live` in a
-   private window.
+2. **Model:** Azure sign-up is blocked for now, so use a free OpenAI-compatible tier (Groq suggested) per
+   `docs/deploy-free.md`. Check `/config` says `openai-compatible`. I'll then tune prompts against real output
+   (the agents have only been tested offline and against a fake endpoint).
+3. **Deploy free** with `infra/deploy-hf.ps1` to a Hugging Face Space. Put the URL in the README.
+4. If Azure access comes through (Azure for Students, another card, or the organisers): Foundry model, Speech F0,
+   then `infra/deploy.ps1` after a budget alert, per `docs/deploy.md`.
 5. **Video** (< 2 min) following SPEC section 16, then **submit** by Tue Oct 27, 11:00 PM WAT.
 6. Housekeeping before submission (ask me):
    - delete `legacy/`
