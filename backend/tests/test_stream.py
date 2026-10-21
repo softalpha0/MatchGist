@@ -36,6 +36,7 @@ def test_stream_delivers_events_stats_moments_and_end():
     assert seen["snapshot"] == 1
     assert len(events) == created["event_count"]
     assert seen["moment"] >= 3 and seen["stats"] >= 90
+    assert seen["delivery"] >= 10 and seen["agent_event"] >= 50
     assert [e["seq"] for e in events] == sorted(e["seq"] for e in events)
 
     state = client.get(f"/matches/{created['match_id']}/state").json()
@@ -55,6 +56,7 @@ def test_late_joiner_after_full_time_gets_state_and_end():
     with client.stream("GET", f"/matches/{mid}/stream") as r:
         names = [name for name, _ in read_sse(r.iter_lines())]
     assert names[0] == "snapshot" and names[-1] == "end" and "event" not in names
+    assert "delivery" in names  # late joiners still see what every fan received
 
 
 def test_unknown_match_404():
@@ -90,3 +92,38 @@ def test_demo_matches_prepared_at_startup():
 
             time.sleep(0.2)
         assert {"demo-none", "demo-comeback", "demo-red_card", "demo-late_drama"} <= ids
+
+
+def test_replay_ledger_digest_and_add_fan():
+    with TestClient(app) as client:
+        for _ in range(300):
+            if any(m["match_id"] == "demo-late_drama" for m in client.get("/matches").json()):
+                break
+            import time
+
+            time.sleep(0.2)
+        info = client.post("/matches/demo-late_drama/replay", json={"speed": 10000}).json()
+        assert info["match_id"].startswith("demo-late_drama-r") and info["status"] == "ready"
+        mid = info["match_id"]
+        extra = {
+            "fan_id": "fan_test",
+            "display_name": "Tester",
+            "language": "pt-BR",
+            "mode": "casual",
+            "channel": "sms",
+            "data_budget_kb": 50,
+            "max_pings": 2,
+        }
+        assert client.post(f"/matches/{mid}/fans", json=extra).status_code == 201
+        assert client.post(f"/matches/{mid}/fans", json=extra).status_code == 409
+        with client.stream("GET", f"/matches/{mid}/stream") as r:
+            for name, _ in read_sse(r.iter_lines()):
+                if name == "end":
+                    break
+        led = client.get(f"/matches/{mid}/fans/fan_jakarta/ledger").json()
+        assert led["pings_used"] <= 4 and led["deliveries"]
+        assert client.get(f"/matches/{mid}/fans/fan_jakarta/digest").json()["kind"] == "digest"
+        test_led = client.get(f"/matches/{mid}/fans/fan_test/ledger").json()
+        assert test_led["pings_used"] <= 2
+        cfg = client.get("/config").json()
+        assert cfg["llm_mode"] in ("offline", "azure-openai", "foundry")

@@ -180,7 +180,9 @@ class LiarClient(BaseChatClient):
 
     def _inner_get_response(self, *, messages, stream, options, **kwargs):
         async def lie() -> ChatResponse:
-            return ChatResponse(messages=Message("assistant", ['{"text": "It is his 777th goal in 123 games!"}']))
+            return ChatResponse(
+                messages=Message("assistant", ['{"text": "It is his 777th goal in 123 games!"}'])
+            )
 
         return lie()
 
