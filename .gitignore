@@ -1,10 +1,13 @@
+.env
+.venv/
 __pycache__/
 *.pyc
-.venv/
-.env
+node_modules/
+matches/*.jsonl
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
-dist/
+.mypy_cache/
 *.egg-info/
+dist/
+.next/
 .azure/
