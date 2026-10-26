@@ -1,0 +1,19 @@
+# Netlify serves the static site with recorded matches (frontend/public/replays). No server, no keys.
+# The live agent server (FastAPI) runs elsewhere or locally; see docs/deploy-free.md.
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/live"
+  to = "/live.html"
+  status = 200
+
+[[headers]]
+  for = "/replays/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

@@ -4,6 +4,7 @@
 import { useEffect, useRef } from "react";
 import { audioUrl } from "@/lib/api";
 import type { Delivery, Fan, LedgerSummary } from "@/lib/types";
+import { WhyButton } from "./Evidence";
 
 const LANG_LABEL: Record<string, string> = {
   en: "English",
@@ -111,6 +112,7 @@ function Meta({ d }: { d: Delivery }) {
       {d.kind === "bundle" && <span className="text-accent-2">bundled</span>}
       {d.kind === "digest" && <span className="text-accent">digest</span>}
       {d.fallback_used && <span className="text-amber-400">template</span>}
+      <WhyButton d={d} />
     </div>
   );
 }
@@ -254,6 +256,7 @@ export function WatchDevice({ fan, ledger, deliveries }: { fan: Fan; ledger?: Le
               <div className="text-[11px] leading-tight text-slate-300">{last.text}</div>
               {last.value && <div className="mt-1 font-mono text-2xl font-bold text-accent">{last.value}</div>}
               <div className="mt-1 text-[9px] text-slate-500">{last.match_clock}</div>
+              <div className="text-[9px]"><WhyButton d={last} /></div>
             </div>
           ) : (
             <div className="text-[10px] text-slate-500">idle</div>

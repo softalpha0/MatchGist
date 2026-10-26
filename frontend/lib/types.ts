@@ -94,6 +94,8 @@ export interface Moment {
   player_id: string | null;
   base_score: number;
   facts: Record<string, unknown>;
+  event_id?: string | null;
+  source_event_ids?: string[];
 }
 
 export interface TeamSnap {
