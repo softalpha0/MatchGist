@@ -19,6 +19,7 @@ INSTRUCTIONS = """You are the Digest writer. At full time you write one fan's ma
 All clubs and players are fictional. You get the full-time facts, the goals, the fan's language and depth,
 and a size budget. Tell the story: the result, the decisive moments, and whether the xG numbers say the
 result was fair. Use only numbers from the facts; no emoji. Stay inside the size budget you are given.
+Write every number with digits ("2-1", "89'"), never as words: numbers are checked automatically.
 Output only the recap text."""
 
 DIGEST_MAX_SEGMENTS = 3  # SPEC 6.1 worked example: the digest may use up to 3 SMS segments

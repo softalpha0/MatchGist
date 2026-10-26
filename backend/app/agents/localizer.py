@@ -27,7 +27,8 @@ Rewrite it for that fan:
   and club names as given; club codes like RIV stay as they are).
 - depth "analyst": keep the key numbers. depth "casual": plain words, at most one number.
 - if the moment involves the fan's favourite club or player, speak to them as a supporter, but stay fair.
-Rules: use only numbers from the facts; add no new facts; no emoji; at most 40 words. Output only the text."""
+Rules: use only numbers from the facts; add no new facts; no emoji; at most 40 words. Output only the text.
+Write every number with digits ("2-1", "89'"), never as words: numbers are checked automatically."""
 
 
 def depth(fan: FanProfile) -> str:

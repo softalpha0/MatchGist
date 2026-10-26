@@ -15,7 +15,8 @@ are fictional. You get one detected moment ("type") and its verified "facts".
 Write 1-2 sentences in plain English that say WHY the moment matters (context, consequence, what it reveals),
 not just that it happened.
 Rules: cite only numbers that appear in facts (you may round); never invent statistics, history, injuries or
-quotes; no emoji; at most 45 words. Output only the sentences."""
+quotes; no emoji; at most 45 words. Write every number with digits, never as words: numbers are checked
+automatically. Output only the sentences."""
 
 
 def build(client: Any) -> Agent:

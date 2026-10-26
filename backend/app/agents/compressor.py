@@ -34,6 +34,8 @@ Channel limits:
 - voice: a spoken sentence of at most 15 seconds (about 30 words); no abbreviations, no club codes.
 - watch: "text" at most 40 characters with NO digits, plus "value": the one number to show (e.g. "2-1").
 - push: "title" at most 50 characters and "text" (body) at most 100 characters.
+For sms, `target_chars` is the most characters that fit: count them and stay under it.
+Write every number with digits ("2-1", "89'"), never as words: numbers are checked automatically.
 Use only numbers from the facts. If "feedback" is present, your previous attempt was rejected for that reason:
 fix exactly that.
 Reply with JSON only: {"text": "...", "title": "...", "value": "..."} (omit keys the channel doesn't use)."""
@@ -76,6 +78,7 @@ def request(
         depth=depth,
         attempt=attempt,
         feedback=feedback,
+        target_chars=None if current is None else sms_char_budget(text, max_segments),
         current=None
         if current is None
         else {
@@ -86,6 +89,16 @@ def request(
     )
 
 
+def sms_char_budget(text: str, max_segments: int) -> int:
+    """Characters that fit in ``max_segments`` for this text's encoding (the model can count these)."""
+    if analyze_sms(text).encoding == "UCS-2":
+        return 70 if max_segments <= 1 else 67 * max_segments
+    return 160 if max_segments <= 1 else 153 * max_segments
+
+
+TEXT_KEYS = ("text", "message", "body", "sms", "content", "transcript")
+
+
 def to_message(reply: str, channel: str, language: str) -> Message | None:
     data = parse_json_reply(reply)
     if data is None:
@@ -94,7 +107,10 @@ def to_message(reply: str, channel: str, language: str) -> Message | None:
             if channel in ("watch", "push")
             else Message(channel=channel, text=reply.strip(), language=language)
         )
-    text = str(data.get("text") or "").strip()
+    # models sometimes rename the key; an empty "text" would otherwise burn a retry
+    text = next(
+        (str(data[k]).strip() for k in TEXT_KEYS if isinstance(data.get(k), str) and data[k].strip()), ""
+    )
     return Message(
         channel=channel,
         text=text,

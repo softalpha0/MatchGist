@@ -346,3 +346,19 @@ def test_capped_calls_fall_back_to_templates_and_the_feed_continues() -> None:
     details = [p["detail"] for n, p in out if n == "agent_event"]
     assert any("model-call cap reached" in d for d in details)
     assert sum(1 for n, _ in out if n == "delivery") > 20  # the feed kept going
+
+
+def test_compressor_accepts_renamed_text_key_and_rejects_empty() -> None:
+    from app.agents.compressor import to_message
+
+    assert to_message('{"message": "RIV 2-1 NOR"}', "sms", "en").text == "RIV 2-1 NOR"
+    assert to_message('{"text": ""}', "sms", "en").text == ""  # still empty: the Verifier rejects it
+
+
+def test_sms_char_budget_follows_encoding() -> None:
+    from app.agents.compressor import sms_char_budget
+
+    assert sms_char_budget("RIV 2-1 NOR", 1) == 160
+    assert sms_char_budget("RIV 2-1 NOR", 2) == 306
+    assert sms_char_budget("मैच खत्म", 1) == 70
+    assert sms_char_budget("मैच खत्म", 2) == 134
