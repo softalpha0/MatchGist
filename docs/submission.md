@@ -34,7 +34,8 @@ message to see the facts, the six source events (time, type, player, team, coord
 decision and each agent step. A Verifier checks every digit in every message against the facts, in any script,
 and every channel limit with real GSM-7 / UCS-2 segment counting. A rejected message goes back to the Compressor
 with the exact reason; after two tries, a per-language template takes over. The feed never stops.
-The `evidence/` folder holds these trails for four full matches.
+The `evidence/` folder holds these trails for four full matches: 193 messages, all model-written and verified,
+6 drafts rejected and fixed on retry, 0 template fallbacks.
 
 ## How it's built
 

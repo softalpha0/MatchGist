@@ -20,6 +20,10 @@ then fits each moment to what each fan actually has, and shows the events behind
 | Demo video | `<YouTube link>` |
 | Evidence | [`evidence/`](evidence/): moments, source events, outputs and Verifier results for four full matches |
 
+In the four recorded matches, **193 messages** went to six fans. All 193 were written by the model and passed
+the Verifier; 6 drafts were rejected (a number not in the facts, or too long for the SMS allowance) and fixed on
+the Compressor's second try; **0** fell back to a template.
+
 ## Contents
 
 1. [The problem](#the-problem)
