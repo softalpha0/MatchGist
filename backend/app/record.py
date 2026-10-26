@@ -15,6 +15,7 @@ import asyncio
 import json
 import time
 from collections import Counter
+from dataclasses import replace
 from typing import Any, get_args
 
 from app.agents.llm import LLMSettings
@@ -182,7 +183,8 @@ def main() -> None:
     ap.add_argument("--storyline", choices=list(get_args(Storyline)), action="append")
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
-    settings = LLMSettings.from_env()
+    # the caps protect a public server; a recording is a one-off run, and capped calls would become templates
+    settings = replace(LLMSettings.from_env(), calls_per_minute=0, calls_per_day=0)
     REPLAYS.mkdir(parents=True, exist_ok=True)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     index = []
