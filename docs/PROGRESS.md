@@ -1,6 +1,6 @@
 # Progress
 
-_Last updated: Wed Oct 21 (M3–M5 built; M6: Azure sign-up blocked, so a free path was added)._
+_Last updated: Mon Oct 26 (final pass: recorded replays for Netlify, evidence drawer, evidence/, README, submission text)._
 
 ## Milestones (SPEC section 15)
 
@@ -69,3 +69,14 @@ _Last updated: Wed Oct 21 (M3–M5 built; M6: Azure sign-up blocked, so a free p
    - decide whether `SPEC.md`, `HACKATHON_BRIEF.md` and `CLAUDE.md` stay in the public repo (they mention the
      real league's name in the challenge title)
 7. Stretch (not done): real SMS via Azure Communication Services.
+
+## Final pass (Oct 26)
+
+- Live model run (OpenAI-compatible endpoint): prompt fixes for the SMS character budget and digits-only numbers.
+- `python -m app.record`: full matches recorded to `frontend/public/replays/` and `evidence/`.
+- `/live` plays recordings when no server is found (Netlify), with Jump to HT/60'/75'/85'/FT.
+- "why?" under every message and on key moments: facts, source events, Budget Guard decision, agent steps.
+- Phone layout; `netlify.toml`; README rewritten to the final-pass structure; `docs/submission.md`,
+  `docs/hackathon-brief.md`.
+- Skipped: token counts in the UI (not logged), a "talking points" studio view, organiser data (none is
+  provided: the rules say no match data is supplied), deploying on Azure (no subscription).

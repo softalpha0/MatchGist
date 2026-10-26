@@ -79,11 +79,11 @@ const NUMBERS = [
 ];
 
 const TECH = [
-  ["Microsoft Foundry", "Hosts the models behind the Explainer, Localizer, Compressor and Digest agents."],
   ["Microsoft Agent Framework", "Agents plus a per-fan workflow with conditional edges and a Verifier retry loop."],
-  ["Azure AI Speech", "Neural text-to-speech voice notes with real duration and size."],
-  ["Azure Container Apps", "One container: FastAPI, the live SSE stream and this site."],
-  ["GitHub Actions", "Lint, 170+ tests and a smoke run on every push."],
+  ["Any OpenAI-compatible model", "The language agents call a chat model through one client; Microsoft Foundry and Azure OpenAI are supported in code."],
+  ["Azure AI Speech (optional)", "Voice-note adapter with real duration and size; without a key, the transcript is shown and sized."],
+  ["Netlify + recorded runs", "This site plays full recorded matches with no server. The FastAPI agent server runs live from the same repo."],
+  ["GitHub Actions", "Lint, 178 tests and a smoke run on every push."],
 ];
 
 export default function Home() {
@@ -108,7 +108,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[1.05fr_1fr] lg:pt-24">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3 py-1 text-xs text-slate-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Multi-agent match intelligence on Microsoft Foundry
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Multi-agent match intelligence on Microsoft Agent Framework
             </div>
             <h1 className="mt-5 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
               The match, sized to fit <span className="text-accent">every fan</span>.
