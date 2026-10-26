@@ -1,6 +1,6 @@
 # late_drama: Riverside Athletic 1-2 Northgate Rovers
 
-Seed 42, model `offline-templates`, recorded 2026-10-26 03:47 UTC.
+Seed 42, model `openai-compatible:gpt-6-luna`, recorded 2026-10-26 04:14 UTC.
 Synthetic match, fictional clubs and players.
 
 1371 events, 17 moments, 46 deliveries to 6 fans.
@@ -10,9 +10,9 @@ Synthetic match, fictional clubs and players.
 | Result | Count |
 |---|---|
 | Verifier passed | 46 |
-| Verifier rejected, sent back to the Compressor | 3 |
+| Verifier rejected, sent back to the Compressor | 4 |
 | Fell back to a template after rejections | 0 |
-| Deliveries written by the offline templates (and verified) | 46 |
+| Deliveries written by the model (and verified) | 46 |
 | Deliveries from a fallback template | 0 |
 
 Template fallbacks by agent: none.
@@ -36,9 +36,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Nnamdi Okeke-Rhodes should have scored (17'): a 0.49 xG chance, saved. Still RIV 0-0 NOR. | not budgeted | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | فرصة محققة ⁨Okeke-Rhodes⁩ [0.49] | 0.54 KB | offline templates, verified |
-| Student, Delhi | sms (hi) | बड़ा मौका NOR (17') Nnamdi Okeke-Rhodes | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Nnamdi Okeke-Rhodes’s 0.49 xG chance is saved; Riverside Athletic and Northgate Rovers remain level at 0-0. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | تصدى الحارس لمحاولة Nnamdi Okeke-Rhodes [0-0] | 0.56 KB | model, verified |
+| Student, Delhi | sms (hi) | Nnamdi Okeke-Rhodes का शॉट बचा; स्कोर 0-0। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 32:03 momentum_swing (`demo-late_drama-mom-0005`)
 
@@ -57,8 +57,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Northgate Rovers now hold the momentum (33'), 9 shots to 1. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Northgate Rovers का दबदबा है (33'), शॉट 9 बनाम 1। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers have seized momentum with a rating of 56, but remain level 0-0 with Riverside Athletic. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Northgate Rovers का पलड़ा भारी; स्कोर 0-0, स्विंग 68। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 47:00 half_time (`demo-late_drama-mom-0006`)
 
@@ -77,9 +77,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Half-time: Riverside Athletic 0-0 Northgate Rovers. xG 0.17 to 1.1, possession 63% to 37%. | not budgeted | offline templates, verified |
-| Commuter, Jakarta | sms (id) | Turun minum: Riverside Athletic 0-0 Northgate Rovers. | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | हाफ टाइम: Riverside Athletic 0-0 Northgate Rovers। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | At the break, Riverside Athletic and Northgate Rovers are level at 0-0, with Northgate leading the shot count. | not budgeted | model, verified |
+| Commuter, Jakarta | sms (id) | Riverside Athletic unggul penguasaan bola dan akurasi operan; Northgate Rovers lebih mengancam dengan 9 tembakan. Skor jeda 0-0. | 0.2 KB, 1 seg GSM-7 | model, verified |
+| Student, Delhi | sms (hi) | हाफ़टाइम: Riverside Athletic 0-0 Northgate Rovers; Northgate के 9 शॉट। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 46:41 goal (`demo-late_drama-mom-0007`)
 
@@ -98,9 +98,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Ravi Khatri-Sen scores for Northgate Rovers (47'): RIV 0-1 NOR. A 0.92 xG chance, struck at 105.0 km/h. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | Northgate Rovers के लिए Ravi Khatri-Sen का गोल (47'): RIV 0-1 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف NOR ⁨Khatri-Sen⁩ [0-1] | 0.53 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Ravi Khatri-Sen puts Northgate Rovers 1-0 ahead in the 47th minute. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | هدف Ravi Khatri-Sen يمنح التقدم [0-1] | 0.55 KB | model, verified |
+| Student, Delhi | sms (hi) | Ravi Khatri-Sen के 47वें मिनट के गोल से NOR ने 0-1 की बढ़त ली। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 51:03 momentum_swing (`demo-late_drama-mom-0009`)
 
@@ -119,8 +119,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Northgate Rovers now hold the momentum (52'), 11 shots to 4. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Northgate Rovers का दबदबा है (52'), शॉट 11 बनाम 4। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers have swung momentum by 44 and lead Riverside Athletic 0-1. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Northgate Rovers आगे 0-1; Riverside Athletic पर दबाव, मोमेंटम +44। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 67:05 momentum_swing (`demo-late_drama-mom-0011`)
 
@@ -139,8 +139,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Riverside Athletic now hold the momentum (68'), 6 shots to 14. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Riverside Athletic का दबदबा है (68'), शॉट 6 बनाम 14। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | At 68 minutes, Riverside Athletic trail Northgate Rovers 0-1, with momentum down to 31. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Riverside Athletic 0-1 से Northgate Rovers से पीछे; रफ्तार घटी। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 78:03 momentum_swing (`demo-late_drama-mom-0014`)
 
@@ -159,8 +159,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Riverside Athletic now hold the momentum (79'), 7 shots to 16. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Riverside Athletic का दबदबा है (79'), शॉट 7 बनाम 16। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | At 79 minutes, Riverside Athletic trail Northgate Rovers 0-1, with momentum at 28. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Riverside Athletic 0-1 से पीछे; Northgate Rovers हावी। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 89:00 goal (`demo-late_drama-mom-0015`)
 
@@ -179,10 +179,10 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Thiago Esquível scores for Riverside Athletic (90'): RIV 1-1 NOR. A 0.07 xG chance, struck at 100.8 km/h. | not budgeted | offline templates, verified |
-| Commuter, Jakarta | sms (id) | Thiago Esquivel mencetak gol untuk Riverside Athletic (90'): RIV 1-1 NOR. | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | Riverside Athletic के लिए Thiago Esquível का गोल (90'): RIV 1-1 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف RIV ⁨Esquível⁩ [1-1] | 0.53 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Thiago Esquível's 89th-minute equalizer makes it 1-1, with Riverside's 0.41 xG trailing Northgate's 2.56. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | Thiago Esquível يعيد Riverside للتعادل [1-1] | 0.55 KB | model, verified |
+| Commuter, Jakarta | sms (id) | Gol Thiago Esquivel menit 89 samakan skor 1-1 untuk RIV kontra Northgate Rovers. | 0.2 KB, 1 seg GSM-7 | model, verified |
+| Student, Delhi | sms (hi) | 90वें मिनट में Thiago Esquível के गोल से Riverside Athletic ने Northgate Rovers के साथ 1-1 की बराबरी की! | 0.4 KB, 2 seg UCS-2 | model, verified |
 
 ### 91:27 goal (`demo-late_drama-mom-0016`)
 
@@ -201,9 +201,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Joaquín Barrenechea scores for Northgate Rovers (92'): RIV 1-2 NOR. A 0.17 xG chance, struck at 91.5 km/h. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | Northgate Rovers के लिए Joaquín Barrenechea का गोल (92'): RIV 1-2 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف NOR ⁨Barrenechea⁩ [1-2] | 0.53 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Joaquín Barrenechea scores in the 92nd minute to put Northgate Rovers 2-1 ahead of Riverside Athletic. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | 92वें मिनट में Joaquín Barrenechea के गोल से Northgate Rovers ने Riverside Athletic को 2-1 से हराया। | 0.4 KB, 2 seg UCS-2 | model, verified |
+| Fan roaming in Dubai | watch (ar) | هدف متأخر لـ Joaquín Barrenechea [1-2] | 0.54 KB | model, verified |
 
 ### 93:17 full_time (`demo-late_drama-mom-0017`)
 
@@ -222,17 +222,17 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Commuter, Jakarta | sms (id) | Laga usai: Riverside Athletic 1-2 Northgate Rovers. Khatri-Sen 47', Esquivel 90', Barrenechea 92' | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | मैच खत्म: Riverside Athletic 1-2 Northgate Rovers। Khatri-Sen 47', Esquível 90', Barrenechea 92' | 0.4 KB, 2 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | نهاية المباراة [1-2] | 0.53 KB | offline templates, verified |
-| Studio analyst, London | broadcast (en) | Full-time: Riverside Athletic 1-2 Northgate Rovers. xG 0.41 to 2.73. Player of the match: Ravi Khatri-Sen. | not budgeted | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers beat Riverside Athletic 2-1, with Joaquín Barrenechea’s 92nd-minute goal sealing a dramatic win. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | فوز Northgate على Riverside [1-2] | 0.54 KB | model, verified |
+| Commuter, Jakarta | sms (id) | Riverside Athletic kalah 1-2 dari Northgate Rovers. Ravi Khatri-Sen mencetak gol menit 47, Thiago Esquivel menyamakan menit 90, lalu Joaquin Barrenechea membalas menit 92. | 0.4 KB, 2 seg GSM-7 | model, verified |
+| Student, Delhi | sms (hi) | Northgate Rovers ने Riverside Athletic को 2-1 से हराया। 92वें मिनट में Joaquín Barrenechea ने जीत दिलाई। | 0.4 KB, 2 seg UCS-2 | model, verified |
 
 ## Full-time digests
 
 | Fan | Text | Size |
 |---|---|---|
-| Commuter, Jakarta | Laga usai: Riverside Athletic 1-2 Northgate Rovers. Khatri-Sen 47', Esquivel 90', Barrenechea 92' | 0.2 KB |
-| Fan, Lagos | Match don end: Riverside Athletic 1-2 Northgate Rovers. Khatri-Sen 47', Esquível 90', Barrenechea 92' | 11.6 KB |
-| Office worker, São Paulo | Fim de jogo: Riverside Athletic 1-2 Northgate Rovers. | 1.07 KB |
-| Student, Delhi | मैच खत्म: Riverside Athletic 1-2 Northgate Rovers। Khatri-Sen 47', Esquível 90', Barrenechea 92' | 0.4 KB |
-| Fan roaming in Dubai | نهاية المباراة | 0.53 KB |
+| Fan roaming in Dubai | فوز Northgate على Riverside | 0.54 KB |
+| Office worker, São Paulo | Ravi Khatri-Sen abriu o placar; Joaquín Barrenechea decidiu. xG: 2,73 a 0,41. | 1.11 KB |
+| Fan, Lagos | Northgate Rovers beat Riverside Athletic 1-2. Ravi Khatri-Sen score first, Thiago Esquível equalize, but Joaquín Barrenechea get the late winner. | 16.2 KB |
+| Commuter, Jakarta | Riverside Athletic kalah 1-2 dari Northgate Rovers. Ravi Khatri-Sen mencetak gol menit 47, Thiago Esquivel menyamakan menit 90, lalu Joaquin Barrenechea membalas menit 92. | 0.4 KB |
+| Student, Delhi | Northgate Rovers ने Riverside Athletic को 2-1 से हराया। 92वें मिनट में Joaquín Barrenechea ने जीत दिलाई। | 0.4 KB |

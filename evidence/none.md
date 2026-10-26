@@ -1,6 +1,6 @@
 # none: Riverside Athletic 1-2 Northgate Rovers
 
-Seed 42, model `offline-templates`, recorded 2026-10-26 03:47 UTC.
+Seed 42, model `openai-compatible:gpt-6-luna`, recorded 2026-10-26 04:04 UTC.
 Synthetic match, fictional clubs and players.
 
 1402 events, 16 moments, 44 deliveries to 6 fans.
@@ -10,12 +10,12 @@ Synthetic match, fictional clubs and players.
 | Result | Count |
 |---|---|
 | Verifier passed | 44 |
-| Verifier rejected, sent back to the Compressor | 4 |
+| Verifier rejected, sent back to the Compressor | 0 |
 | Fell back to a template after rejections | 0 |
-| Deliveries written by the offline templates (and verified) | 44 |
+| Deliveries written by the model (and verified) | 44 |
 | Deliveries from a fallback template | 0 |
 
-Template fallbacks by agent: none.
+Template fallbacks by agent: explainer 1.
 
 ## Moments and their source events
 
@@ -36,9 +36,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Joaquín Barrenechea scores for Northgate Rovers (4'): RIV 0-1 NOR. A 0.05 xG chance, struck at 87.6 km/h. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | Northgate Rovers के लिए Joaquín Barrenechea का गोल (4'): RIV 0-1 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف NOR ⁨Barrenechea⁩ [0-1] | 0.53 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Joaquín Barrenechea puts Northgate Rovers 0-1 ahead from just 0.05 xG; it was their only shot. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Joaquín Barrenechea ने 4वें मिनट में Northgate Rovers को 0-1 की बढ़त दिलाई। | 0.4 KB, 2 seg UCS-2 | model, verified |
+| Fan roaming in Dubai | watch (ar) | هدف Joaquín Barrenechea! [0-1] | 0.53 KB | model, verified |
 
 ### 17:10 big_chance (`demo-none-mom-0003`)
 
@@ -57,9 +57,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Nnamdi Okeke-Rhodes should have scored (18'): a 0.3 xG chance, saved. Still RIV 0-1 NOR. | not budgeted | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | فرصة محققة ⁨Okeke-Rhodes⁩ [0.3] | 0.54 KB | offline templates, verified |
-| Student, Delhi | sms (hi) | को गोल करना चाहिए था ('): xG का मौका, । | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate lead Riverside 1-0, but Nnamdi Okeke-Rhodes’s 0.3 xG effort was saved. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | 0-1: Nnamdi Okeke-Rhodes का शॉट बचा (18') | 0.2 KB, 1 seg UCS-2 | model, verified |
+| Fan roaming in Dubai | watch (ar) | تصدى لتسديدة Nnamdi Okeke-Rhodes [0-1] | 0.54 KB | model, verified |
 
 ### 19:04 momentum_swing (`demo-none-mom-0004`)
 
@@ -78,8 +78,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Northgate Rovers now hold the momentum (20'), 4 shots to 0. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | को गोल करना चाहिए था ('): xG का मौका, । | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers lead Riverside Athletic 0-1, with momentum surging from 12 to 64 after 4 shots and 0.44 xG. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | 0-1: Nnamdi Okeke-Rhodes का शॉट बचा (18') | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 47:00 half_time (`demo-none-mom-0006`)
 
@@ -98,9 +98,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Half-time: Riverside Athletic 0-1 Northgate Rovers. xG 0.04 to 0.44, possession 63% to 37%. | not budgeted | offline templates, verified |
-| Commuter, Jakarta | sms (id) | Turun minum: Riverside Athletic 0-1 Northgate Rovers. | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | हाफ टाइम: Riverside Athletic 0-1 Northgate Rovers। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | At halftime, Northgate Rovers lead Riverside Athletic 0-1. Joaquín Barrenechea’s goal has put Riverside’s 0.04 xG into sharp relief: possession has brought little threat. | not budgeted | model, verified |
+| Commuter, Jakarta | sms (id) | Riverside Athletic tertinggal 0-1 saat jeda, gol Joaquín Barrenechea. | 0.2 KB, 1 seg UCS-2 | model, verified |
+| Student, Delhi | sms (hi) | ब्रेक: Riverside Athletic 0-1 Northgate Rovers। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 48:08 momentum_swing (`demo-none-mom-0007`)
 
@@ -119,8 +119,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Northgate Rovers now hold the momentum (49'), 7 shots to 2. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Northgate Rovers का दबदबा है (49'), शॉट 7 बनाम 2। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | At 0-1, Northgate Rovers have surged from 8 to 36 in momentum, with a 7-2 shot advantage and a 0.53-0.04 expected-goals edge. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Northgate Rovers आगे, स्कोर 0-1। Riverside Athletic जवाब दे! | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 61:26 goal (`demo-none-mom-0008`)
 
@@ -139,9 +139,9 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Ravi Khatri-Sen scores for Northgate Rovers (62'): RIV 0-2 NOR. A 0.65 xG chance, struck at 111.4 km/h. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | Northgate Rovers के लिए Ravi Khatri-Sen का गोल (62'): RIV 0-2 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف NOR ⁨Khatri-Sen⁩ [0-2] | 0.53 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Ravi Khatri-Sen scores in the 62nd minute to put Northgate Rovers 2-0 ahead. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | هدف Ravi Khatri-Sen لـ Northgate [0-2] | 0.54 KB | model, verified |
+| Student, Delhi | sms (hi) | Ravi Khatri-Sen के गोल से Northgate Rovers ने 0-2 की बढ़त बनाई। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 68:04 momentum_swing (`demo-none-mom-0011`)
 
@@ -160,8 +160,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Riverside Athletic now hold the momentum (69'), 3 shots to 10. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Riverside Athletic का दबदबा है (69'), शॉट 3 बनाम 10। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Riverside Athletic’s momentum has climbed to 28, but they still trail Northgate Rovers 0-2. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | Riverside Athletic की लय सुधरी, पर Northgate Rovers से 0-2 पीछे। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 72:06 goal (`demo-none-mom-0013`)
 
@@ -180,10 +180,10 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | Kalani Akana scores for Riverside Athletic (73'): RIV 1-2 NOR. A 0.11 xG chance, struck at 109.9 km/h. | not budgeted | offline templates, verified |
-| Commuter, Jakarta | sms (id) | Kalani Akana mencetak gol untuk Riverside Athletic (73'): RIV 1-2 NOR. | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | Riverside Athletic के लिए Kalani Akana का गोल (73'): RIV 1-2 NOR। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | هدف RIV ⁨Akana⁩ [1-2] | 0.52 KB | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Kalani Akana pulls Riverside Athletic within one at 1-2, finishing a chance worth just 0.11 xG. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | Kalani Akana يقلّص الفارق [1-2] | 0.54 KB | model, verified |
+| Commuter, Jakarta | sms (id) | Kalani Akana mencetak gol! Riverside Athletic kini tertinggal 1-2 dari Northgate Rovers. | 0.2 KB, 1 seg GSM-7 | model, verified |
+| Student, Delhi | sms (hi) | Kalani Akana ने गोल किया; Riverside Athletic अब 1-2 से पीछे है। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 87:03 momentum_swing (`demo-none-mom-0015`)
 
@@ -202,8 +202,8 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Studio analyst, London | broadcast (en) | The game has turned: Northgate Rovers now hold the momentum (88'), 14 shots to 7. | not budgeted | offline templates, verified |
-| Student, Delhi | sms (hi) | खेल पलट गया: अब Northgate Rovers का दबदबा है (88'), शॉट 14 बनाम 7। | 0.2 KB, 1 seg UCS-2 | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers lead Riverside Athletic 2-1, with momentum at 56 after a late surge. | not budgeted | model, verified |
+| Student, Delhi | sms (hi) | 1-2 पर Northgate Rovers ने रफ्तार पकड़ी; Riverside Athletic पर दबाव। | 0.2 KB, 1 seg UCS-2 | model, verified |
 
 ### 93:00 full_time (`demo-none-mom-0016`)
 
@@ -222,15 +222,15 @@ What each fan received:
 
 | Fan | Channel | Text | Size | Source |
 |---|---|---|---|---|
-| Commuter, Jakarta | sms (id) | Laga usai: Riverside Athletic 1-2 Northgate Rovers. Barrenechea 4', Khatri-Sen 62', Akana 73' | 0.2 KB, 1 seg GSM-7 | offline templates, verified |
-| Student, Delhi | sms (hi) | मैच खत्म: Riverside Athletic 1-2 Northgate Rovers। Barrenechea 4', Khatri-Sen 62', Akana 73' | 0.4 KB, 2 seg UCS-2 | offline templates, verified |
-| Fan roaming in Dubai | watch (ar) | نهاية المباراة [1-2] | 0.53 KB | offline templates, verified |
-| Studio analyst, London | broadcast (en) | Full-time: Riverside Athletic 1-2 Northgate Rovers. xG 0.39 to 1.49. Player of the match: Ravi Khatri-Sen. | not budgeted | offline templates, verified |
+| Studio analyst, London | broadcast (en) | Northgate Rovers beat Riverside Athletic 2-1. Ravi Khatri-Sen’s 62nd-minute goal proved decisive, as Northgate outshot Riverside 14-7 despite the hosts’ 58% possession. | not budgeted | model, verified |
+| Fan roaming in Dubai | watch (ar) | نورثغيت يفوز، وخاتري-سين نجم اللقاء [1-2] | 0.57 KB | model, verified |
+| Student, Delhi | sms (hi) | Northgate Rovers ने Riverside Athletic को 1-2 से हराया। Ravi Khatri-Sen शीर्ष खिलाड़ी रहे। | 0.4 KB, 2 seg UCS-2 | model, verified |
+| Commuter, Jakarta | sms (id) | Northgate Rovers menang 2-1 di kandang Riverside Athletic. Ravi Khatri-Sen jadi pemain terbaik; xG Northgate 1.49. | 0.2 KB, 1 seg GSM-7 | model, verified |
 
 ## Full-time digests
 
 | Fan | Text | Size |
 |---|---|---|
-| Commuter, Jakarta | Laga usai: Riverside Athletic 1-2 Northgate Rovers. Barrenechea 4', Khatri-Sen 62', Akana 73' | 0.2 KB |
-| Student, Delhi | मैच खत्म: Riverside Athletic 1-2 Northgate Rovers। Barrenechea 4', Khatri-Sen 62', Akana 73' | 0.4 KB |
-| Fan roaming in Dubai | نهاية المباراة | 0.53 KB |
+| Fan roaming in Dubai | نورثغيت يفوز، وخاتري-سين نجم اللقاء | 0.57 KB |
+| Student, Delhi | Northgate Rovers ने Riverside Athletic को 1-2 से हराया। Ravi Khatri-Sen शीर्ष खिलाड़ी रहे। | 0.4 KB |
+| Commuter, Jakarta | Northgate Rovers menang 2-1 di kandang Riverside Athletic. Ravi Khatri-Sen jadi pemain terbaik; xG Northgate 1.49. | 0.2 KB |
