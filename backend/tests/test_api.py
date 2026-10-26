@@ -25,3 +25,23 @@ def test_create_match_rejects_unknown_storyline():
 def test_fans():
     fans = client.get("/fans").json()
     assert [f["fan_id"] for f in fans][:2] == ["fan_london", "fan_jakarta"]
+
+
+def test_recorder_writes_a_replayable_match_with_evidence() -> None:
+    import asyncio
+
+    from app.agents.llm import LLMSettings
+    from app.record import evidence_markdown, record
+
+    settings = LLMSettings(None, None, "x", None, "v", None, offline=True, timeout_s=1, retries=0)
+    doc = asyncio.run(record("late_drama", 42, settings))
+    msgs = doc["messages"]
+    times = [m[0] for m in msgs]
+    assert times == sorted(times)  # the browser plays them in order
+    assert msgs[0][1] == "snapshot" and msgs[0][2]["names"] and msgs[-1][1] == "end"
+    moments = [p for _, n, p in msgs if n == "moment"]
+    events = {p["event_id"] for _, n, p in msgs if n == "event"}
+    assert moments and all(set(m["source_event_ids"]) <= events and m["source_event_ids"] for m in moments)
+    assert any(n == "delivery" and p["kind"] == "digest" for _, n, p in msgs)
+    md = evidence_markdown(doc)
+    assert "Grounding check" in md and "Moments and their source events" in md

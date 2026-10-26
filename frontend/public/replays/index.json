@@ -1,0 +1,54 @@
+[
+ {
+  "storyline": "none",
+  "seed": 42,
+  "model": "offline-templates",
+  "recorded_at": "2026-10-26 03:47 UTC",
+  "final_score": [
+   1,
+   2
+  ],
+  "home": "Riverside Athletic",
+  "away": "Northgate Rovers",
+  "duration_s": 5700.0
+ },
+ {
+  "storyline": "comeback",
+  "seed": 42,
+  "model": "offline-templates",
+  "recorded_at": "2026-10-26 03:47 UTC",
+  "final_score": [
+   2,
+   3
+  ],
+  "home": "Riverside Athletic",
+  "away": "Northgate Rovers",
+  "duration_s": 5640.0
+ },
+ {
+  "storyline": "red_card",
+  "seed": 42,
+  "model": "offline-templates",
+  "recorded_at": "2026-10-26 03:47 UTC",
+  "final_score": [
+   4,
+   2
+  ],
+  "home": "Riverside Athletic",
+  "away": "Northgate Rovers",
+  "duration_s": 5700.0
+ },
+ {
+  "storyline": "late_drama",
+  "seed": 42,
+  "model": "offline-templates",
+  "recorded_at": "2026-10-26 03:47 UTC",
+  "final_score": [
+   1,
+   2
+  ],
+  "home": "Riverside Athletic",
+  "away": "Northgate Rovers",
+  "duration_s": 5717.0
+ }
+]
