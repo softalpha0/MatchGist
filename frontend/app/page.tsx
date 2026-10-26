@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 
-const REPO = "https://github.com/softalpha0/matchgist";
+const REPO = "https://github.com/softalpha0/MatchGist";
 
 // The same goal, as six fans actually receive it (text in the shape the agents produce).
 const SAME_GOAL = [

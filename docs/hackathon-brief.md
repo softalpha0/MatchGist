@@ -17,7 +17,7 @@ A longer working copy is in `HACKATHON_BRIEF.md`.
 |---|---|---|
 | 1 | Project description: what it does, which Microsoft and Azure tech, the problem it solves | `docs/submission.md` |
 | 2 | Demo video under 2 minutes, public on YouTube, Vimeo, Facebook Video or Youku, no copyrighted music | to record |
-| 3 | Public GitHub repo URL | github.com/softalpha0/matchgist (to push) |
+| 3 | Public GitHub repo URL | github.com/softalpha0/MatchGist (to push) |
 | 4 | Testing access: a working link, free, no restrictions until judging ends | Netlify site (no login) |
 
 Other rules that shape the build: synthetic, football-realistic data only (no data is provided by the

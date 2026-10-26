@@ -7,7 +7,7 @@ param(
   [string]$Location = "swedencentral",
   [string]$Environment = "cae-matchgist",
   [string]$App = "matchgist",
-  [string]$Image = "ghcr.io/softalpha0/matchgist:latest",
+  [string]$Image = "ghcr.io/softalpha0/MatchGist:latest",
   [int]$MinReplicas = 0   # 0 = scale to zero when idle (cheapest; ~10-20 s cold start). 1 = always warm.
 )
 

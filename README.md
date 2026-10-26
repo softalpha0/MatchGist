@@ -1,6 +1,6 @@
 # MatchGist
 
-[![CI](https://github.com/softalpha0/matchgist/actions/workflows/ci.yml/badge.svg)](https://github.com/softalpha0/matchgist/actions/workflows/ci.yml)
+[![CI](https://github.com/softalpha0/MatchGist/actions/workflows/ci.yml/badge.svg)](https://github.com/softalpha0/MatchGist/actions/workflows/ci.yml)
 
 **One match, told to each fan in the way that fits their channel, their data budget and their language.**
 

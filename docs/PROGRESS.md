@@ -57,7 +57,7 @@ _Last updated: Mon Oct 26 (final pass: recorded replays for Netlify, evidence dr
 ## What's left (yours unless noted)
 
 1. **Push the code** (you push manually) and make the GitHub repo public. Decide the repo name; the landing
-   page's "Read the code" link points at `github.com/softalpha0/matchgist`.
+   page's "Read the code" link points at `github.com/softalpha0/MatchGist`.
 2. **Model:** Azure sign-up is blocked for now, so use a free OpenAI-compatible tier (Groq suggested) per
    `docs/deploy-free.md`. Check `/config` says `openai-compatible`. I'll then tune prompts against real output
    (the agents have only been tested offline and against a fake endpoint).
