@@ -178,6 +178,29 @@ def evidence_markdown(doc: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+async def record_all(storylines: list[str], seed: int, settings: LLMSettings) -> None:
+    """One event loop for every match: model clients from a closed loop can't shut down cleanly on Windows."""
+    REPLAYS.mkdir(parents=True, exist_ok=True)
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
+    index_path = REPLAYS / "index.json"
+    for storyline in storylines:
+        started = time.perf_counter()
+        doc = await record(storyline, seed, settings)
+        path = REPLAYS / f"{storyline}.json"
+        path.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        (EVIDENCE / f"{storyline}.md").write_text(evidence_markdown(doc), encoding="utf-8")
+        # written after every match, so an interrupted run keeps what it finished
+        old = json.loads(index_path.read_text()) if index_path.exists() else []
+        known = {m["storyline"]: m for m in old} | {storyline: doc["meta"]}
+        index = json.dumps(list(known.values()), ensure_ascii=False, indent=1)
+        index_path.write_text(index, encoding="utf-8")
+        print(
+            f"{storyline}: {len(doc['messages'])} messages, {path.stat().st_size // 1024} KB, "
+            f"model {doc['meta']['model']}, {time.perf_counter() - started:.0f}s",
+            flush=True,
+        )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--storyline", choices=list(get_args(Storyline)), action="append")
@@ -185,24 +208,7 @@ def main() -> None:
     args = ap.parse_args()
     # the caps protect a public server; a recording is a one-off run, and capped calls would become templates
     settings = replace(LLMSettings.from_env(), calls_per_minute=0, calls_per_day=0)
-    REPLAYS.mkdir(parents=True, exist_ok=True)
-    EVIDENCE.mkdir(parents=True, exist_ok=True)
-    index = []
-    for storyline in args.storyline or list(get_args(Storyline)):
-        started = time.perf_counter()
-        doc = asyncio.run(record(storyline, args.seed, settings))
-        path = REPLAYS / f"{storyline}.json"
-        path.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-        (EVIDENCE / f"{storyline}.md").write_text(evidence_markdown(doc), encoding="utf-8")
-        index.append(doc["meta"])
-        print(
-            f"{storyline}: {len(doc['messages'])} messages, {path.stat().st_size // 1024} KB, "
-            f"model {doc['meta']['model']}, {time.perf_counter() - started:.0f}s"
-        )
-    existing = REPLAYS / "index.json"
-    known = {m["storyline"]: m for m in (json.loads(existing.read_text()) if existing.exists() else [])}
-    known.update({m["storyline"]: m for m in index})
-    existing.write_text(json.dumps(list(known.values()), ensure_ascii=False, indent=1), encoding="utf-8")
+    asyncio.run(record_all(args.storyline or list(get_args(Storyline)), args.seed, settings))
 
 
 if __name__ == "__main__":
