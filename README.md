@@ -331,4 +331,6 @@ CI runs ruff, the tests, the frontend build and a container smoke test on every 
   logos, names or data are used.
 - Microsoft Agent Framework, FastAPI, Pydantic, Next.js, React, Tailwind CSS.
 - System fonts only; the icon is our own.
+- Demo video narration: Piper text-to-speech with the LibriTTS-R voice (CC BY 4.0); music synthesised for the
+  video, no samples.
 - All clubs, players and fans are fictional. MIT licence.
