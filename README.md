@@ -1,6 +1,6 @@
 # MatchGist
 
-[![CI](https://github.com/softalpha0/matchgist/actions/workflows/ci.yml/badge.svg)](https://github.com/softalpha0/matchgist/actions/workflows/ci.yml)
+[![CI](https://github.com/softalpha0/MatchGist/actions/workflows/ci.yml/badge.svg)](https://github.com/softalpha0/MatchGist/actions/workflows/ci.yml)
 
 **One match, told to each fan in the way that fits their channel, their data budget and their language.**
 
@@ -19,6 +19,10 @@ then fits each moment to what each fan actually has, and shows the events behind
 | Sample match | `<your Netlify URL>/live`, pick **Late drama**, press **Kick off**, then **Jump → FT** |
 | Demo video | `<YouTube link>` |
 | Evidence | [`evidence/`](evidence/): moments, source events, outputs and Verifier results for four full matches |
+
+In the four recorded matches, **193 messages** went to six fans. All 193 were written by the model and passed
+the Verifier; 6 drafts were rejected (a number not in the facts, or too long for the SMS allowance) and fixed on
+the Compressor's second try; **0** fell back to a template.
 
 ## Contents
 
