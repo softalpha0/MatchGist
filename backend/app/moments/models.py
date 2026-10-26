@@ -44,3 +44,6 @@ class Moment(BaseModel):
     base_score: int = Field(ge=0, le=100)
     facts: dict[str, Any] = Field(default_factory=dict, description="the only numbers agents may cite")
     event_id: str | None = None
+    source_event_ids: list[str] = Field(
+        default_factory=list, description="the events leading up to and including the trigger, oldest first"
+    )

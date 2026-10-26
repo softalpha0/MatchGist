@@ -6,6 +6,7 @@ to explain it, and may cite only these facts.
 
 from __future__ import annotations
 
+from collections import deque
 from typing import Any
 
 from app.moments.models import BASE_SCORE, Moment, MomentType
@@ -230,6 +231,9 @@ class MomentDetector:
         return out
 
 
+SOURCE_EVENTS = 6  # trigger plus the 5 events before it
+
+
 class MatchAnalyzer:
     """Stats Engine + Moment Detector over one match: feed events, get moments."""
 
@@ -237,12 +241,16 @@ class MatchAnalyzer:
         self.state = state
         self.stats = StatsEngine(state)
         self.detector = MomentDetector(state, self.stats)
+        self.recent: deque[str] = deque(maxlen=SOURCE_EVENTS)
 
     def feed(self, ev: MatchEvent) -> list[Moment]:
+        self.recent.append(ev.event_id)
         samples = self.stats.apply(ev)
         moments: list[Moment] = []
         for minute in samples:
             moments.extend(self.detector.on_sample(minute))
         moments.extend(self.detector.on_event(ev))
+        for m in moments:  # the evidence trail a viewer can open for any message built on this moment
+            m.source_event_ids = list(self.recent)
         self.state.moments.extend(moments)
         return moments

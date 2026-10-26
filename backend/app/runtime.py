@@ -56,7 +56,7 @@ class MatchRuntime:
     def subscribe(self) -> asyncio.Queue[Message | None]:
         """Join the live feed. Late joiners first get the state, moments, deliveries and recent decisions."""
         q: asyncio.Queue[Message | None] = asyncio.Queue(maxsize=QUEUE_MAX)
-        q.put_nowait(("snapshot", self.snapshot_payload()))
+        q.put_nowait(("snapshot", {**self.snapshot_payload(), "names": self.state.names}))
         for m in self.state.moments:
             q.put_nowait(("moment", m.model_dump()))
         for s in self.orchestrator.sessions.values():
