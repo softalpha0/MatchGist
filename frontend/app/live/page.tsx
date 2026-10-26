@@ -32,7 +32,7 @@ const MOMENT_LABEL: Record<string, string> = {
 
 export default function LivePage() {
   const [storyline, setStoryline] = useState("late_drama");
-  const [speed, setSpeed] = useState(60);
+  const [speed, setSpeed] = useState(30);
   const [matchId, setMatchId] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);

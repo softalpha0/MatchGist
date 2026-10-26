@@ -19,7 +19,7 @@ Free tiers change often. Check the provider's own limits page before relying on 
    MATCHGIST_LLM_BASE_URL=https://api.groq.com/openai/v1
    MATCHGIST_LLM_API_KEY=<key>
    MATCHGIST_LLM_MODEL=<model id>
-   MATCHGIST_LLM_CALLS_PER_MINUTE=12
+   MATCHGIST_LLM_CALLS_PER_MINUTE=60
    MATCHGIST_LLM_CALLS_PER_DAY=900
    ```
 4. Restart `uvicorn` and open `http://127.0.0.1:8000/config`: `llm_mode` should say `openai-compatible`.
@@ -28,8 +28,9 @@ Free tiers change often. Check the provider's own limits page before relying on 
 and tokens per minute and per day. Calls over our cap skip the model and use the templates at once, so the feed
 never waits on a 429, and a public link can't burn the day's quota. The System panel says when that happens.
 
-At 60x a match lasts about 1.5 minutes, so most calls will hit the per-minute cap. **Record the demo video at 10x**
-(about 9 minutes per match, ~10 calls a minute) to show real model output throughout.
+One goal triggers about 12 calls at once (the Explainer, then a Localizer and Compressor per fan), so a cap
+below ~60 a minute turns most of a match into templates. At 60x a match lasts about 1.5 minutes (~60 calls a
+minute), so the live page now starts at **30x**; record the demo at 10x or 30x to show model output throughout.
 
 Gemini (Google AI Studio) and OpenRouter `:free` models also expose OpenAI-compatible endpoints; only the three
 `MATCHGIST_LLM_*` values change.
