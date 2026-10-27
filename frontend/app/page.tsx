@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { VisionSection } from "@/components/VisionSection";
 
 const REPO = "https://github.com/softalpha0/MatchGist";
 
@@ -83,7 +84,7 @@ const TECH = [
   ["Any OpenAI-compatible model", "The language agents call a chat model through one client; Microsoft Foundry and Azure OpenAI are supported in code."],
   ["Azure AI Speech (optional)", "Voice-note adapter with real duration and size; without a key, the transcript is shown and sized."],
   ["Netlify + recorded runs", "This site plays full recorded matches with no server. The FastAPI agent server runs live from the same repo."],
-  ["GitHub Actions", "Lint, 178 tests and a smoke run on every push."],
+  ["GitHub Actions", "Lint, 182 tests and a smoke run on every push."],
 ];
 
 export default function Home() {
@@ -96,6 +97,7 @@ export default function Home() {
             <a href="#how" className="hover:text-white">How it works</a>
             <a href="#constraints" className="hover:text-white">Constraints</a>
             <a href="#trust" className="hover:text-white">Trust</a>
+            <a href="#vision" className="hover:text-white">Auto-eventing</a>
             <a href="#tech" className="hover:text-white">Built with</a>
           </div>
           <Link href="/live" className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-ink">Watch it live</Link>
@@ -237,6 +239,8 @@ export default function Home() {
       </section>
 
       {/* tech */}
+      <VisionSection />
+
       <section id="tech" className="border-t border-line bg-panel/40">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <h2 className="text-3xl font-bold tracking-tight">Built with</h2>

@@ -10,6 +10,7 @@ as `frontend/public/replays/<storyline>.json`, which is exactly what the live si
 | [comeback.md](comeback.md) | 2-3: Northgate come back from 2-0 down |
 | [red_card.md](red_card.md) | 4-2: a red card at 67', then three more goals |
 | [none.md](none.md) | 1-2: an open game with no storyline bias |
+| [auto-eventing.md](auto-eventing.md) | Passes, distance and ball speed detected from a synthetic match video, scored against the truth |
 
 Each file has:
 

@@ -67,6 +67,15 @@ six fans:
 
 Every message shows its size, its SMS segments and encoding, and a **why?** link to the events behind it.
 
+Two more pieces of match intelligence:
+
+- **Speed and distance tags.** The simulator moves all 22 players every 0.5 s. When a player sprints past
+  30 km/h or passes 7 km covered, or a shot tops 100 km/h or a pass 90 km/h, a name tag appears on the pitch.
+- **Auto-eventing from video (prototype).** The same tracking is rendered as a top-down camera feed; a detector
+  that sees only the pixels finds passes, their distance and ball speed. Over a full match it found 96.7% of 731
+  passes (91.6% precision), with distance within 0.9 m and ball speed within 1.6 km/h (median). See
+  [evidence/auto-eventing.md](evidence/auto-eventing.md).
+
 ## Try it in a minute
 
 1. Open the live app and press **Watch it live**.
@@ -77,7 +86,8 @@ Every message shows its size, its SMS segments and encoding, and a **why?** link
    follows Riverside, so the Northgate winner is skipped for them, and the System panel says why.
 5. Tap **why?** under any message. You see the detected facts, the 6 source events (time, type, player, team,
    pitch coordinates), the Budget Guard's decision and every agent step for that fan.
-6. Tap any **key moment** on the left for the same view of the moment itself.
+6. Tap any **key moment** on the left for the same view of the moment itself. Watch the pitch for speed and
+   distance tags (sprints over 30 km/h, 7 km+ covered, shots over 100 km/h).
 7. At full time each fan gets a digest sized to whatever is left of their budget.
 
 ## How it works
@@ -191,6 +201,7 @@ Only what the code enforces:
 | A fan's ping limit and data budget are never exceeded | Ledger plus Budget Guard; the last 2 pings are kept for a goal and the digest | `state/ledger.py`, `agents/budget_guard.py` |
 | The feed never stops | Every model call has a timeout and 2 retries; then a template | `agents/llm.py` |
 | A public link can't run up model costs | Per-minute and per-day caps on model calls; over the cap, templates answer at once | `agents/llm.py` (`CallCap`) |
+| Speed and distance tags only fire past their thresholds | Sprints from the tracking at 30 km/h+, milestones at whole km, shots 100 km/h+, passes 90 km/h+ | `simulator/engine.py` (`_track`), `frontend/components/Pitch.tsx` |
 | Every moment can be traced to its events | Source event IDs stored on the moment, moment IDs on the delivery | `moments/detector.py`, `state/ledger.py` |
 
 Paths are under `backend/app/`.
@@ -257,11 +268,18 @@ To use a model, copy `.env.example` to `.env` (never committed):
 
 `http://127.0.0.1:8000/config` shows which backend is active, without exposing keys.
 
+**Auto-eventing prototype** (needs `pip install -e ".[vision]"` and ffmpeg for the clip):
+
+```powershell
+python -m app.vision.evaluate        # full match: evidence\auto-eventing.md, frontend\public\vision\
+```
+
 **Record matches for the static site** (uses the model in `.env` if set):
 
 ```powershell
 cd backend
 python -m app.record                 # writes frontend\public\replays\*.json and evidence\*.md
+python -m app.record --add-tracking  # adds sprint and distance events to existing recordings, no model calls
 ```
 
 **Deploy to Netlify:** connect the GitHub repo in Netlify. `netlify.toml` builds `frontend/` and publishes
@@ -269,17 +287,18 @@ python -m app.record                 # writes frontend\public\replays\*.json and
 
 ## Testing
 
-178 backend tests, all offline. Model calls are never made in tests: they use the offline client or test
+182 backend tests, all offline. Model calls are never made in tests: they use the offline client or test
 doubles.
 
 | Area | File | Tests | What they cover |
 |---|---|---|---|
 | Agents | `test_agents.py` | 102 | Templates in 6 languages, Budget Guard, Ranker, Verifier (a hallucinating model and a failing model), the Hindi SMS reject-and-rewrite loop, budget limits for every persona, call caps |
 | Channels | `test_channels.py` | 32 | GSM-7 vs UCS-2, extension characters, surrogate pairs, limits, sizes |
-| Simulator | `test_simulator.py` | 16 | Determinism, schema, realistic counts and scores, coordinates, storylines, pacing |
+| Simulator | `test_simulator.py` | 17 | Determinism, schema, realistic counts and scores, coordinates, storylines, pacing, sprint and distance thresholds |
+| Vision | `test_vision.py` | 2 | The rendered ball matches the tracking; passes and ball speed detected from pixels meet recall, precision and error bounds |
 | Stats and moments | `test_stats.py` | 13 | Possession, pass difficulty, xG, momentum, moment rules |
 | Stream | `test_stream.py` | 6 | SSE contents, late joiners, one shared playback, replay, ledger, digest, add a fan |
-| API and recorder | `test_api.py` | 5 | Endpoints, replays in order, source events present, evidence |
+| API and recorder | `test_api.py` | 6 | Endpoints, replays in order, source events present, evidence, adding tracking events without touching agent output |
 | Data | `test_data.py`, `test_fans.py` | 4 | Fictional clubs and fan profiles are valid |
 
 CI runs ruff, the tests, the frontend build and a container smoke test on every push
@@ -295,6 +314,7 @@ CI runs ruff, the tests, the frontend build and a container smoke test on every 
 | `backend/app/agents/` | Explainer, Ranker, Budget Guard, Localizer, Compressor, Verifier, Digest, templates, workflow |
 | `backend/app/record.py` | Records full matches for the static site and `evidence/` |
 | `backend/app/voice/` | Azure AI Speech adapter |
+| `backend/app/vision/` | Auto-eventing prototype: renders the tracking as video, detects passes and ball speed from pixels, scores them |
 | `frontend/` | Landing page and `/live` (Next.js + Tailwind) |
 | `frontend/public/replays/` | Recorded matches played by the static site |
 | `data/` | Fictional clubs and the six fan personas |
@@ -305,6 +325,9 @@ CI runs ruff, the tests, the frontend build and a container smoke test on every 
 ## Known limitations
 
 - **Synthetic data only.** Events come from our simulator, not real matches or video.
+- **Auto-eventing is a prototype on synthetic top-down video.** It tells teams apart by kit colour (not
+  individual players), detects passes only, and runs offline; real broadcast footage would need a trained
+  detector and camera calibration.
 - **Channels are simulated.** No real SMS, push or watch messages are sent; sizes and segments are computed
   exactly, but delivery is shown on device mock-ups.
 - **The Verifier checks digits, not words or names.** A number written as a word ("two-one") or a wrong player
@@ -322,6 +345,8 @@ CI runs ruff, the tests, the frontend build and a container smoke test on every 
   agents and the per-fan workflow; landing page and live demo.
 - **Oct 21:** OpenAI-compatible model backend and call caps after Azure sign-up failed.
 - **Oct 26:** first full runs with a live model; prompt fixes (SMS character budget, digits only); 30x default.
+- **Oct 27:** speed and distance tags from the simulator's tracking (new `sprint` and `distance_milestone`
+  events); auto-eventing prototype that detects passes and ball speed from rendered video.
 - **Oct 26:** source events on every moment, the **why?** evidence drawer, recorded matches and static replay
   for Netlify, phone layout, `evidence/`.
 
