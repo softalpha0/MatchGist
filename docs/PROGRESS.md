@@ -80,3 +80,12 @@ _Last updated: Mon Oct 26 (final pass: recorded replays for Netlify, evidence dr
   `docs/hackathon-brief.md`.
 - Skipped: token counts in the UI (not logged), a "talking points" studio view, organiser data (none is
   provided: the rules say no match data is supplied), deploying on Azure (no subscription).
+
+## Oct 27: speed, distance and auto-eventing
+
+- New `sprint` and `distance_milestone` events from the simulator's 0.5 s tracking (additive schema change,
+  asked for directly). Seeded matches are unchanged; `python -m app.record --add-tracking` updates recordings.
+- Pitch name tags at thresholds: sprints 30 km/h+, 7 km+ covered, shots 100 km/h+, passes 90 km/h+.
+- `backend/app/vision/`: tracking rendered as video; passes, distance and ball speed detected from pixels;
+  full match: 96.7% recall, 91.6% precision, 0.86 m distance error, 1.6 km/h median speed error.
+- 182 tests.

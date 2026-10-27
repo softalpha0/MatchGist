@@ -6,6 +6,7 @@ is stamped with its match time, so the browser can replay it at any speed with n
 
     python -m app.record                     # all storylines -> frontend/public/replays + evidence/
     python -m app.record --storyline comeback
+    python -m app.record --add-tracking      # sprint/distance events into existing recordings, no model
 """
 
 from __future__ import annotations
@@ -178,6 +179,35 @@ def evidence_markdown(doc: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+TRACKING_TYPES = ("sprint", "distance_milestone")
+
+
+def add_tracking(storyline: str, seed: int = 42) -> int:
+    """Insert the tracking events (sprints, distance milestones) into an existing recording.
+
+    The simulator is deterministic, so the same match is regenerated and only its tracking events are taken.
+    The recording's moments, deliveries and agent text stay exactly as recorded: no model calls.
+    """
+    path = REPLAYS / f"{storyline}.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    msgs = doc["messages"]
+    if any(n == "event" and p.get("type") in TRACKING_TYPES for _, n, p in msgs):
+        return 0
+    match = generate_match(seed, storyline, f"demo-{storyline}")
+    now, extra = 0.0, []
+    for wait, ev in _delays(match, 1.0):
+        now += wait
+        if ev.type in TRACKING_TYPES:
+            payload = ev.model_dump(exclude_none=True)
+            # fresh ids: the recording's own event ids (and the moments citing them) must not change
+            payload["event_id"] = f"demo-{storyline}-trk-{len(extra) + 1:04d}"
+            extra.append([round(now, 1), "event", payload])
+    merged = sorted(msgs + extra, key=lambda m: m[0])  # stable: recorded order kept at equal times
+    doc["messages"] = merged
+    path.write_text(json.dumps(doc, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    return len(extra)
+
+
 async def record_all(storylines: list[str], seed: int, settings: LLMSettings) -> None:
     """One event loop for every match: model clients from a closed loop can't shut down cleanly on Windows."""
     REPLAYS.mkdir(parents=True, exist_ok=True)
@@ -205,7 +235,14 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--storyline", choices=list(get_args(Storyline)), action="append")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument(
+        "--add-tracking", action="store_true", help="add sprint and distance events to existing recordings"
+    )
     args = ap.parse_args()
+    if args.add_tracking:
+        for storyline in args.storyline or list(get_args(Storyline)):
+            print(f"{storyline}: added {add_tracking(storyline, args.seed)} tracking events")
+        return
     # the caps protect a public server; a recording is a one-off run, and capped calls would become templates
     settings = replace(LLMSettings.from_env(), calls_per_minute=0, calls_per_day=0)
     asyncio.run(record_all(args.storyline or list(get_args(Storyline)), args.seed, settings))

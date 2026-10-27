@@ -131,3 +131,21 @@ def test_stream_paces_by_speed(match42):
     assert len(events) == len(match42.events)
     # 90+ minutes of play at 60x is about 90 seconds of wall time (half-time break skipped)
     assert 85 < sum(waits) < 110
+
+
+def test_tracking_indicators_fire_at_thresholds() -> None:
+    from collections import defaultdict
+
+    from app.simulator.engine import FIRST_MILESTONE_KM, SPRINT_KMH, generate_match
+
+    m = generate_match(42, "none", "trk")
+    sprints = [e for e in m.events if e.type == "sprint"]
+    milestones = [e for e in m.events if e.type == "distance_milestone"]
+    assert 10 <= len(sprints) <= 150 and milestones
+    # thresholds hold, and speeds stay human (players are capped at about 33 km/h in the model)
+    assert all(SPRINT_KMH <= e.top_speed_kmh <= 34 and e.distance_m > 0 for e in sprints)
+    seen: dict[str, list[int]] = defaultdict(list)
+    for e in milestones:
+        seen[e.player_id].append(e.total_km)
+    assert all(km[0] >= FIRST_MILESTONE_KM and km == sorted(set(km)) for km in seen.values())
+    assert max(max(v) for v in seen.values()) <= 13  # a full match is roughly 9-12 km at most

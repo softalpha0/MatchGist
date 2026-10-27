@@ -112,6 +112,13 @@ class StatsEngine:
                 s.possession = ev.to_team
             case "substitution":
                 pass
+            case "sprint":
+                if ps:
+                    ps.sprints += 1
+                    ps.top_speed_kmh = max(ps.top_speed_kmh, ev.top_speed_kmh)
+            case "distance_milestone":
+                if ps:
+                    ps.distance_km = max(ps.distance_km, ev.total_km)
         return self._samples(t)
 
     def broadcast_minute(self, t: float) -> float:

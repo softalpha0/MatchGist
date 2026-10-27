@@ -45,3 +45,24 @@ def test_recorder_writes_a_replayable_match_with_evidence() -> None:
     assert any(n == "delivery" and p["kind"] == "digest" for _, n, p in msgs)
     md = evidence_markdown(doc)
     assert "Grounding check" in md and "Moments and their source events" in md
+
+
+def test_add_tracking_inserts_sprints_without_touching_agent_output(tmp_path, monkeypatch) -> None:
+    import asyncio
+    import json
+
+    from app import record
+    from app.agents.llm import LLMSettings
+
+    settings = LLMSettings(None, None, "x", None, "v", None, offline=True, timeout_s=1, retries=0)
+    doc = asyncio.run(record.record("late_drama", 42, settings))
+    # an older recording, made before the tracking events existed
+    doc["messages"] = [m for m in doc["messages"] if m[2].get("type") not in record.TRACKING_TYPES]
+    monkeypatch.setattr(record, "REPLAYS", tmp_path)
+    (tmp_path / "late_drama.json").write_text(json.dumps(doc))
+    before = [m for m in doc["messages"] if m[1] != "event"]
+    assert record.add_tracking("late_drama") > 10
+    after = json.loads((tmp_path / "late_drama.json").read_text())["messages"]
+    assert [m for m in after if m[1] != "event"] == before  # deliveries and agent steps unchanged
+    assert [m[0] for m in after] == sorted(m[0] for m in after)
+    assert record.add_tracking("late_drama") == 0  # idempotent

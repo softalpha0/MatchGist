@@ -37,6 +37,10 @@ from app.simulator.schema import (
 from app.simulator.storylines import AWAY, HOME, StoryPlan, plan_for, satisfied
 
 DT = 0.5  # simulation step, seconds
+RUN_START_KMH = 25.0  # high-speed running starts here (the usual 25.2 km/h band)
+RUN_END_KMH = 20.0
+SPRINT_KMH = 30.0  # a run is logged as a sprint once it tops this
+FIRST_MILESTONE_KM = 5  # distance milestones at 5, 6, 7 ... km covered
 HALF = 45 * 60
 GOAL_HALF_WIDTH = 3.66
 VENUES = ["Lantern Park", "The Saltworks", "Millbrook Stadium", "Copperfield Ground"]
@@ -158,6 +162,9 @@ class MatchEngine:
         self.pos: dict[str, list[float]] = {}
         self.vel: dict[str, list[float]] = {pid: [0.0, 0.0] for pid in self.records}
         self.ran: dict[str, float] = {pid: 0.0 for pid in self.records}
+        # tracking-derived indicators: open high-speed runs and the last distance milestone per player
+        self.runs: dict[str, tuple[float, float, float, float]] = {}  # pid -> (x, y, top km/h, metres)
+        self.km_logged: dict[str, int] = {pid: 0 for pid in self.records}
         self.phase = {pid: self.rng.uniform(0, math.tau) for pid in self.records}
         self.stoppage = (self.rng.randint(1, 3) * 60, self.rng.randint(2, 5) * 60)
         self.t = 0.0
@@ -514,8 +521,35 @@ class MatchEngine:
             v[1] += ay
             nx = clamp(p[0] + v[0] * DT, 0.2, PITCH_LENGTH - 0.2)
             ny = clamp(p[1] + v[1] * DT, 0.2, PITCH_WIDTH - 0.2)
-            self.ran[pid] += math.hypot(nx - p[0], ny - p[1])
+            step = math.hypot(nx - p[0], ny - p[1])
+            self.ran[pid] += step
+            self._track(pid, (p[0], p[1]), (nx, ny), step)
             p[0], p[1] = nx, ny
+
+    def _track(self, pid: str, before: tuple[float, float], after: tuple[float, float], step: float) -> None:
+        """Speed and distance indicators from the 0.5 s tracking: sprints and distance milestones.
+
+        Emitted only when a threshold is crossed, so the feed stays sparse (a few per minute).
+        """
+        kmh = step / DT * 3.6
+        run = self.runs.get(pid)
+        if kmh >= RUN_START_KMH:
+            x0, y0, top, metres = run or (before[0], before[1], 0.0, 0.0)
+            self.runs[pid] = (x0, y0, max(top, kmh), metres + step)
+        elif run and kmh < RUN_END_KMH:
+            del self.runs[pid]
+            x0, y0, top, metres = run
+            if top >= SPRINT_KMH:
+                side = self.side[pid]
+                end = self.rel(side, *after)
+                self._emit(
+                    "sprint", side, pid, (x0, y0), end_x=end[0], end_y=end[1],
+                    top_speed_kmh=round(top, 1), distance_m=round(metres, 1),
+                )  # fmt: skip
+        km = int(self.ran[pid] // 1000)
+        if km >= FIRST_MILESTONE_KM and km > self.km_logged[pid]:
+            self.km_logged[pid] = km
+            self._emit("distance_milestone", self.side[pid], pid, after, total_km=km)
 
     # ------------------------------------------------------------------ on-ball decisions
     def _pressure_events(self) -> None:

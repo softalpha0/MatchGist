@@ -53,6 +53,9 @@ class PlayerStats:
     carry_m: float = 0.0
     yellow_cards: int = 0
     sent_off: bool = False
+    sprints: int = 0
+    top_speed_kmh: float = 0.0
+    distance_km: int = 0  # last whole-kilometre milestone from the tracking data
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -66,6 +69,9 @@ class PlayerStats:
             "tackles_won": self.tackles_won,
             "interceptions": self.interceptions,
             "carry_m": round(self.carry_m),
+            "sprints": self.sprints,
+            "top_speed_kmh": round(self.top_speed_kmh, 1),
+            "distance_km": self.distance_km,
         }
 
 
