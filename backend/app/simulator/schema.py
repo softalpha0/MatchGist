@@ -154,6 +154,23 @@ class PressureEvent(EventBase):
     intensity: Unit
 
 
+class SprintEvent(EventBase):
+    """A high-speed run from the tracking data, logged when its top speed passes the sprint threshold."""
+
+    type: Literal["sprint"] = "sprint"
+    end_x: X
+    end_y: Y
+    top_speed_kmh: float = Field(ge=0)
+    distance_m: float = Field(ge=0)
+
+
+class DistanceMilestoneEvent(EventBase):
+    """A player's total distance covered (tracking data) has passed another whole kilometre."""
+
+    type: Literal["distance_milestone"] = "distance_milestone"
+    total_km: int = Field(ge=1)
+
+
 class SubstitutionEvent(EventBase):
     type: Literal["substitution"] = "substitution"
     player_off: str
@@ -172,7 +189,9 @@ MatchEvent = Annotated[
     | FoulEvent
     | PossessionChangeEvent
     | PressureEvent
-    | SubstitutionEvent,
+    | SubstitutionEvent
+    | SprintEvent
+    | DistanceMilestoneEvent,
     Field(discriminator="type"),
 ]
 EVENT_ADAPTER: TypeAdapter[MatchEvent] = TypeAdapter(MatchEvent)
@@ -189,6 +208,8 @@ EVENT_TYPES = (
     "possession_change",
     "pressure",
     "substitution",
+    "sprint",
+    "distance_milestone",
 )
 
 

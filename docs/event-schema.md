@@ -44,6 +44,8 @@ Every event in `matches/*.jsonl` validates against these models (tested).
 | `possession_change` | `from_team`, `to_team`, `cause` | `cause` ∈ interception, tackle, save, block, goal_kick, kick_off, foul, throw_in, half_time |
 | `pressure` | `target_player_id`, `intensity` 0–1 | A pressing action: an opponent who was 8 m+ away when the player received the ball closes them down to within 1.2 m |
 | `substitution` | `player_off`, `player_on` | `player_id` = `player_on` |
+| `sprint` | `end_x`, `end_y`, `top_speed_kmh`, `distance_m` | From the 0.5 s tracking: a run above 25 km/h whose top speed passes 30 km/h. `x`, `y` = start |
+| `distance_milestone` | `total_km` | From the tracking: the player's distance covered has passed another whole km (from 5 km) |
 
 ### Example
 
@@ -52,6 +54,9 @@ Every event in `matches/*.jsonl` validates against these models (tested).
  "team_id":"RIV","player_id":"RIV-08","x":46.2,"y":31.0,"end_x":71.5,"end_y":18.4,"outcome":"complete",
  "receiver_id":"RIV-10","pressure":0.62,"speed_kmh":58.3,"meta":{"x_completion":0.71,"cross":false}}
 ```
+
+Added on Oct 27: `sprint` and `distance_milestone`. They are additive; existing recordings can be updated with
+`python -m app.record --add-tracking` (no model calls).
 
 ## How the simulator produces realistic numbers
 
