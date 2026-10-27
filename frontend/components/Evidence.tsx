@@ -21,6 +21,13 @@ export function WhyButton({ d }: { d: Delivery }) {
 
 const HIDDEN_FACTS = new Set(["home", "away", "home_code", "away_code"]);
 
+/** Facts can be lists of records (e.g. goals): show their values, not "[object Object]". */
+function showFact(v: unknown): string {
+  if (Array.isArray(v)) return v.map(showFact).join("; ");
+  if (v && typeof v === "object") return Object.values(v).map(showFact).join(" ");
+  return String(v);
+}
+
 function EventRow({ e, names }: { e: MatchEvent; names: Record<string, string> }) {
   return (
     <tr className="border-t border-line/60">
@@ -92,7 +99,7 @@ export function EvidenceDrawer({ item, state, model, onClose }: {
                   {facts.map(([k, v]) => (
                     <tr key={k} className="border-t border-line/60">
                       <td className="py-1 pr-3 text-slate-400">{k.replaceAll("_", " ")}</td>
-                      <td className="font-mono">{String(v)}</td>
+                      <td className="font-mono">{showFact(v)}</td>
                     </tr>
                   ))}
                 </tbody>
