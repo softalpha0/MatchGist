@@ -143,6 +143,10 @@ export interface MatchEvent {
   end_x?: number;
   end_y?: number;
   outcome?: string;
+  speed_kmh?: number; // ball speed (passes, shots), carry speed
+  top_speed_kmh?: number; // sprint
+  distance_m?: number;
+  total_km?: number; // distance milestone
 }
 
 export interface MatchInfo {

@@ -207,7 +207,7 @@ export default function LivePage() {
           <main className="flex flex-col gap-3 p-3 lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,30fr)_minmax(0,46fr)_minmax(0,24fr)]">
             {/* left: pitch with the analyst overlay, stats, key moments */}
             <section className="flex min-h-0 flex-col gap-3">
-              <Pitch snapshot={snap} events={s.events} overlays={overlays} speed={replaying ? speed : snap?.speed ?? speed} />
+              <Pitch snapshot={snap} events={s.events} overlays={overlays} speed={replaying ? speed : snap?.speed ?? speed} names={s.names} />
               <StatStrip snapshot={snap} />
               <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-line bg-panel p-3">
                 <div className="mb-2 text-[11px] uppercase tracking-wider text-slate-400">Key moments · tap for evidence</div>

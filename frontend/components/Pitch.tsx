@@ -19,11 +19,25 @@ const SLOT_CLASS: Record<string, string> = {
   player_tag: "left-3 bottom-3 w-[56%]",
 };
 
-export function Pitch({ snapshot, events, overlays, speed }: {
+// Player tags fire only when a tracking or ball-speed threshold is crossed
+const TAG_SHOT_KMH = 100;
+const TAG_PASS_KMH = 90;
+const TAG_FROM_KM = 7;
+
+function indicator(e: MatchEvent): string | null {
+  if (e.type === "sprint" && e.top_speed_kmh != null) return `⚡ ${e.top_speed_kmh.toFixed(1)} km/h sprint`;
+  if (e.type === "distance_milestone" && (e.total_km ?? 0) >= TAG_FROM_KM) return `${e.total_km} km covered`;
+  if (e.type === "shot" && (e.speed_kmh ?? 0) >= TAG_SHOT_KMH) return `shot ${e.speed_kmh!.toFixed(0)} km/h`;
+  if (e.type === "pass" && (e.speed_kmh ?? 0) >= TAG_PASS_KMH) return `pass ${e.speed_kmh!.toFixed(0)} km/h`;
+  return null;
+}
+
+export function Pitch({ snapshot, events, overlays, speed, names = {} }: {
   snapshot: Snapshot | null;
   events: MatchEvent[];
   overlays: Delivery[];
   speed: number;
+  names?: Record<string, string>;
 }) {
   const homeId = snapshot?.home.club_id ?? "RIV";
   const [visible, setVisible] = useState<Delivery | null>(null);
@@ -38,7 +52,9 @@ export function Pitch({ snapshot, events, overlays, speed }: {
     return () => clearTimeout(t);
   }, [last, speed]);
 
-  const shown = events.filter((e) => e.x != null && e.y != null).slice(-14);
+  // the ball's trail: tracking indicators (sprints, milestones) are tagged, not drawn as ball events
+  const shown = events.filter((e) => e.x != null && e.y != null && e.type !== "sprint" && e.type !== "distance_milestone").slice(-14);
+  const tags = events.slice(-10).filter((e) => e.x != null && indicator(e)).slice(-2);
   const lastEv = shown[shown.length - 1];
 
   return (
@@ -79,6 +95,16 @@ export function Pitch({ snapshot, events, overlays, speed }: {
         })()}
       </svg>
 
+      {tags.map((e) => {
+        const [x, y] = e.type === "sprint" && e.end_x != null ? toAbs(e, homeId, e.end_x, e.end_y!) : toAbs(e, homeId, e.x!, e.y!);
+        const name = e.player_id ? (names[e.player_id] ?? e.player_id) : "";
+        return (
+          <div key={e.event_id} className="animate-pop pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md border border-accent/60 bg-black/80 px-1.5 py-0.5 text-[10px] leading-tight text-white shadow"
+            style={{ left: `${((x + 2) / (L + 4)) * 100}%`, top: `${((y + 2) / (W + 4)) * 100 - 1.5}%` }}>
+            <span className="font-semibold">{name.split(" ").slice(-1)[0]}</span> <span className="text-accent">{indicator(e)}</span>
+          </div>
+        );
+      })}
       {visible?.overlay && (
         <div key={visible.delivery_id}
           className={`animate-pop absolute ${SLOT_CLASS[visible.overlay.slot] ?? SLOT_CLASS.lower_third} rounded-lg border border-white/10 bg-black/75 px-3 py-2 backdrop-blur`}>
