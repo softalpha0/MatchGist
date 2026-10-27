@@ -1,0 +1,17 @@
+{
+ "true_passes": 731,
+ "detected": 772,
+ "matched": 707,
+ "recall": 0.967,
+ "recall_4m_plus": 0.97,
+ "precision": 0.916,
+ "distance_mae_m": 0.86,
+ "speed_mae_kmh": 3.79,
+ "speed_median_err_kmh": 1.6,
+ "completion_accuracy": 0.774,
+ "frames_per_second_processed": 499,
+ "storyline": "late_drama",
+ "seed": 42,
+ "clip_start_s": 3147.6,
+ "clip_s": 40
+}
